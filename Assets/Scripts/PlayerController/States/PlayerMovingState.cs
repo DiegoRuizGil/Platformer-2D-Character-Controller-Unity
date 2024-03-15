@@ -33,7 +33,7 @@ namespace PlayerController.States
         public void HandleHorizontalMovement()
         {
             float xSpeed = _context.MaxSpeed * _context.MovementDirection.x;
-            _context.Velocity = new Vector2(xSpeed, _context.Velocity.y);
+            _context.SetHorizontalVelocity(xSpeed);
         }
     }
 }

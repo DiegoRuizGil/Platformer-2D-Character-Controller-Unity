@@ -16,15 +16,25 @@ namespace PlayerController.States
             HandleGravity();
         }
 
-        public override void UpdateState()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void UpdateState() { }
 
         public override void ExitState() { }
 
         public override PlayerStates GetNextState()
         {
+            if (!_context.IsGrounded)
+            {
+                _context.HasCoyoteTime = true;
+                return PlayerStates.Falling;
+            }
+
+            if (_context.JumpRequests > 0 && _context.IsGrounded)
+            {
+                _context.ManageJumpRequest();
+                _context.HasCoyoteTime = false;
+                return PlayerStates.Jumping;
+            }
+            
             return StateKey;
         }
 
@@ -37,7 +47,7 @@ namespace PlayerController.States
 
         public void HandleGravity()
         {
-            _context.Velocity = new Vector2(_context.Velocity.x, 0f);
+            _context.SetVerticalVelocity(0f);
         }
     }
 }

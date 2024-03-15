@@ -12,7 +12,7 @@ namespace StateMachine.Hierarchical
         protected BaseState<EState> _currentRootState;
         private bool _isTransitioningState;
 
-        private void Start()
+        protected virtual void Start()
         {
             SetStates();
             _currentRootState?.EnterState();

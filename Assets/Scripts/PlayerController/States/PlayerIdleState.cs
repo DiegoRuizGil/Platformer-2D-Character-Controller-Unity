@@ -31,7 +31,7 @@ namespace PlayerController.States
         
         public void HandleHorizontalMovement()
         {
-            _context.Velocity = new Vector2(0f, _context.Velocity.y);
+            _context.SetHorizontalVelocity(0f);
         }
     }
 }
