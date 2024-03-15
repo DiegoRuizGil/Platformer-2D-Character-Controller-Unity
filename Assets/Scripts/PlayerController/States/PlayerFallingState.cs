@@ -19,6 +19,9 @@ namespace PlayerController.States
             InitializeSubState();
 
             _fallingTimer = 0f;
+            
+            _context.Animator.SetTrigger(_context.FallingHash);
+            _context.Animator.ResetTrigger(_context.FallingHash);
         }
 
         public override void UpdateState()

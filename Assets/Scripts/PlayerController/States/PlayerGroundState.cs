@@ -14,11 +14,16 @@ namespace PlayerController.States
         {
             InitializeSubState();
             HandleGravity();
+            
+            _context.Animator.SetBool(_context.GroundedHash, true);
         }
 
         public override void UpdateState() { }
 
-        public override void ExitState() { }
+        public override void ExitState()
+        {
+            _context.Animator.SetBool(_context.GroundedHash, false);
+        }
 
         public override PlayerStates GetNextState()
         {

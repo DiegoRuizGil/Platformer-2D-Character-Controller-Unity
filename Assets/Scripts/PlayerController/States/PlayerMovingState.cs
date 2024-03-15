@@ -15,7 +15,11 @@ namespace PlayerController.States
         public override void UpdateState()
         {
             HandleHorizontalMovement();
-            // flip sprite
+            _context.FlipSprite();
+            
+            _context.Animator.SetBool(
+                _context.IdleHash,
+                _context.LeftWallHit || _context.RightWallHit);
         }
 
         public override void ExitState() { }
@@ -33,6 +37,11 @@ namespace PlayerController.States
         public void HandleHorizontalMovement()
         {
             float xSpeed = _context.MaxSpeed * _context.MovementDirection.x;
+            if (_context.LeftWallHit && _context.MovementDirection.x < 0)
+                xSpeed = 0f;
+            else if (_context.RightWallHit && _context.MovementDirection.x > 0)
+                xSpeed = 0f;
+            
             _context.SetHorizontalVelocity(xSpeed);
         }
     }

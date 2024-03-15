@@ -13,11 +13,16 @@ namespace PlayerController.States
         public override void EnterState()
         {
             HandleHorizontalMovement();
+            
+            _context.Animator.SetBool(_context.IdleHash, true);
         }
 
         public override void UpdateState() { }
 
-        public override void ExitState() { }
+        public override void ExitState()
+        {
+            _context.Animator.SetBool(_context.IdleHash, false);
+        }
 
         public override PlayerStates GetNextState()
         {

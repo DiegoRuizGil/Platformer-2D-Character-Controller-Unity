@@ -18,6 +18,8 @@ namespace PlayerController.States
             
             InitializeSubState();
             PerformJump();
+            
+            _context.Animator.SetBool(_context.GroundedHash, false);
         }
 
         public override void UpdateState()

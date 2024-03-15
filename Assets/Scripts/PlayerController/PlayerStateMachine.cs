@@ -24,6 +24,9 @@ namespace PlayerController
         [SerializeField] private float _fallGravityMultiplier = 2.5f;
         [SerializeField] private float _lowJumpGravityMultiplier = 2f;
 
+        [Header("Dependencies")]
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        
         private Rigidbody2D _rb2d;
         private RaycastInfo _raycastInfo;
         
@@ -33,6 +36,8 @@ namespace PlayerController
         #region Movement Properties
         public float MaxSpeed => _maxSpeed;
         public Vector2 MovementDirection => _movementAction.ReadValue<Vector2>();
+        public bool LeftWallHit => _raycastInfo.HitInfo.Left;
+        public bool RightWallHit => _raycastInfo.HitInfo.Right;
         public Vector2 Velocity { get; private set; }
         private Vector2 _oldVelocity;
         #endregion
@@ -51,6 +56,13 @@ namespace PlayerController
         public float JumpVelocity { get; private set; }
         #endregion
 
+        #region Animation Properties
+        public Animator Animator { get; private set; }
+        public int IdleHash { get; private set; }
+        public int GroundedHash { get; private set; }
+        public int FallingHash { get; private set; }
+        #endregion
+
         #region Unity Functions
         private void Awake()
         {
@@ -59,6 +71,9 @@ namespace PlayerController
             _raycastInfo = GetComponent<RaycastInfo>();
 
             _playerInputActions = new PlayerInputActions();
+
+            Animator = GetComponent<Animator>();
+            SetAnimationsHash();
         }
 
         protected override void Start()
@@ -137,6 +152,22 @@ namespace PlayerController
             float yVelocity = Mathf.Clamp(value, -2 * JumpVelocity, JumpVelocity);
             Velocity = new Vector2(Velocity.x, yVelocity);
         }
+
+        public void FlipSprite()
+        {
+            if (!_spriteRenderer) return;
+
+            bool lookingLeft = _spriteRenderer.flipX;
+
+            if (MovementDirection.x < 0 && !lookingLeft)
+            {
+                _spriteRenderer.flipX = true;
+            }
+            else if (MovementDirection.x > 0 && lookingLeft)
+            {
+                _spriteRenderer.flipX = false;
+            }
+        }
         #endregion
 
         #region Jump Functions
@@ -163,6 +194,15 @@ namespace PlayerController
         public void ManageJumpRequest()
         {
             JumpRequests = Mathf.Clamp(JumpRequests - 1, 0, int.MaxValue);
+        }
+        #endregion
+
+        #region Animation Functions
+        private void SetAnimationsHash()
+        {
+            IdleHash = Animator.StringToHash("Idle");
+            GroundedHash = Animator.StringToHash("Grounded");
+            FallingHash = Animator.StringToHash("Falling");
         }
         #endregion
         
