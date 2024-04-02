@@ -14,14 +14,14 @@ namespace PlayerController.States
         {
             HandleHorizontalMovement();
             
-            _context.Animator.SetBool(_context.IdleHash, true);
+            _context.AnimSetIdleVariable(true);
         }
 
         public override void UpdateState() { }
 
         public override void ExitState()
         {
-            _context.Animator.SetBool(_context.IdleHash, false);
+            _context.AnimSetIdleVariable(false);
         }
 
         public override PlayerStates GetNextState()

@@ -7,34 +7,65 @@ namespace PlayerController
 {
     public enum PlayerStates
     {
-        Grounded, Jumping, Falling, Idle, Moving
+        Grounded, Jumping, Falling, WallSliding, WallJumping, Idle, Moving
     }
     
     [RequireComponent(typeof(Rigidbody2D), typeof(RaycastInfo))]
     public class PlayerStateMachine : BaseStateMachine<PlayerStates>
     {
+        #region Serialized Fields
         [Header("Movement Settings")]
-        [SerializeField] private float _maxSpeed = 10f;
+        [Tooltip("Specifies the maximum player's horizontal speed")]
+        [SerializeField, Min(0f)] private float _maxHorizontalSpeed = 10f;
         
         [Header("Jump Settings")]
-        [SerializeField] private float _maxJumpHeight = 4f;
-        [SerializeField] private float _timeToReachJumpApex = 0.4f;
-        [SerializeField] private float _coyoteTime = 0.1f;
-        [SerializeField] private float _jumpBufferTime = 0.2f;
-        [SerializeField] private float _fallGravityMultiplier = 2.5f;
-        [SerializeField] private float _lowJumpGravityMultiplier = 2f;
+        [Tooltip("Specifies  the maximum height the player can reach when jumping, in Unity units")]
+        [SerializeField, Min(0f)] private float _maxJumpHeight = 4f;
+        [Tooltip("Specifies the time in seconds it takes for the player to reach the apex of a jump")]
+        [SerializeField, Min(0f)] private float _timeToReachJumpApex = 0.4f;
+        [Tooltip("Defines the time in seconds during which jump input can be processed after falling from a platform")]
+        [SerializeField, Min(0f)] private float _coyoteTime = 0.1f;
+        [Tooltip("Specifies the duration in seconds during which jump input can be processed")]
+        [SerializeField, Min(0f)] private float _jumpBufferTime = 0.2f;
 
+        [Header("Wall Sliding Settings")]
+        [Tooltip("Sets the velocity at which the player descends while sliding on a wall")]
+        [SerializeField, Min(0f)] private float _wallSlidingVelocity = 5f;
+        [Tooltip("Specifies the horizontal distance the player will cover when performing a jump from a wall, in Unity units")]
+        [SerializeField, Min(0f)] private float _wallJumpDistance = 1.5f;
+        [Tooltip("Determines the horizontal speed gained by the player when jumping off a wall")]
+        [SerializeField, Min(0f)] private float _wallJumpHorizontalSpeed = 10f;
+        public float verticalVelocityMultiplier = 1.5f;
+        
+        [Header("Gravity Settings")]
+        [Tooltip("Adjusts the gravity scale applied to the player while falling")]
+        [SerializeField, Min(1f)] private float _fallGravityMultiplier = 2.5f;
+        [Tooltip("Modifies the gravity scale applied to the player when the jump button is released, resulting in a lower jump")]
+        [SerializeField, Min(1f)] private float _lowJumpGravityMultiplier = 2f;
+
+        [Header("Corner Correction Settings")]
+        [Tooltip("Specifies the horizontal distance the player will be displaced upon colliding with a corner while jumping")]
+        [SerializeField, Min(0f)] private float _cornerDistanceCorrection = 0.25f;
+        
         [Header("Dependencies")]
         [SerializeField] private SpriteRenderer _spriteRenderer;
-        
+        #endregion
+
+        #region Private variables
         private Rigidbody2D _rb2d;
         private RaycastInfo _raycastInfo;
         
         private PlayerInputActions _playerInputActions;
         private InputAction _movementAction;
+
+        private Animator _animator;
+        private int _idleHash;
+        private int _groundedHash;
+        private int _fallingHash;
+        #endregion
         
         #region Movement Properties
-        public float MaxSpeed => _maxSpeed;
+        public float MaxHorizontalSpeed => _maxHorizontalSpeed;
         public Vector2 MovementDirection => _movementAction.ReadValue<Vector2>();
         public bool LeftWallHit => _raycastInfo.HitInfo.Left;
         public bool RightWallHit => _raycastInfo.HitInfo.Right;
@@ -47,8 +78,6 @@ namespace PlayerController
         public bool IsTouchingCeiling => _raycastInfo.HitInfo.Above;
         public float CoyoteTime => _coyoteTime;
         public bool HasCoyoteTime { get; set; }
-        public float FallGravityMultiplier => _fallGravityMultiplier;
-        public float LowJumpGravityMultiplier => _lowJumpGravityMultiplier;
         public int JumpRequests { get; private set; }
         public bool HandleLongJumps { get; private set; }
         public float CheckGroundAfterJump => 0.05f;
@@ -56,11 +85,21 @@ namespace PlayerController
         public float JumpVelocity { get; private set; }
         #endregion
 
-        #region Animation Properties
-        public Animator Animator { get; private set; }
-        public int IdleHash { get; private set; }
-        public int GroundedHash { get; private set; }
-        public int FallingHash { get; private set; }
+        #region Corners Detection Properties
+        public float CornerDistanceCorrection => _cornerDistanceCorrection;
+        public bool IsTouchingLeftCorner => _raycastInfo.HitInfo.CornerLeft;
+        public bool IsTouchingRightCorner => _raycastInfo.HitInfo.CornerRight;
+        #endregion
+        
+        #region Wall Sliding Properties
+        public float WallSlidingVelocity => _wallSlidingVelocity;
+        public float WallJumpDistance => _wallJumpDistance;
+        public float WallJumpHorizontalSpeed => _wallJumpHorizontalSpeed;
+        #endregion
+        
+        #region Gravity Properties
+        public float FallGravityMultiplier => _fallGravityMultiplier;
+        public float LowJumpGravityMultiplier => _lowJumpGravityMultiplier;
         #endregion
 
         #region Unity Functions
@@ -72,7 +111,7 @@ namespace PlayerController
 
             _playerInputActions = new PlayerInputActions();
 
-            Animator = GetComponent<Animator>();
+            _animator = GetComponent<Animator>();
             SetAnimationsHash();
         }
 
@@ -115,6 +154,10 @@ namespace PlayerController
             States.Add(PlayerStates.Grounded, new PlayerGroundState(PlayerStates.Grounded, this));
             States.Add(PlayerStates.Jumping, new PlayerJumpingState(PlayerStates.Jumping, this));
             States.Add(PlayerStates.Falling, new PlayerFallingState(PlayerStates.Falling, this));
+            
+            States.Add(PlayerStates.WallSliding, new PlayerWallSlidingState(PlayerStates.WallSliding, this));
+            States.Add(PlayerStates.WallJumping, new PlayerWallJumpingState(PlayerStates.WallJumping, this));
+            
             States.Add(PlayerStates.Idle, new PlayerIdleState(PlayerStates.Idle, this));
             States.Add(PlayerStates.Moving, new PlayerMovingState(PlayerStates.Moving, this));
 
@@ -143,13 +186,13 @@ namespace PlayerController
         #region Movement Functions
         public void SetHorizontalVelocity(float value)
         {
-            float xVelocity = Mathf.Clamp(value, -1 * _maxSpeed, _maxSpeed);
+            float xVelocity = Mathf.Clamp(value, -1 * _maxHorizontalSpeed, _maxHorizontalSpeed);
             Velocity = new Vector2(xVelocity, Velocity.y);
         }
         
         public void SetVerticalVelocity(float value)
         {
-            float yVelocity = Mathf.Clamp(value, -2 * JumpVelocity, JumpVelocity);
+            float yVelocity = Mathf.Clamp(value, -1.5f * JumpVelocity, JumpVelocity);
             Velocity = new Vector2(Velocity.x, yVelocity);
         }
 
@@ -179,8 +222,6 @@ namespace PlayerController
              */
             Gravity = -2f * _maxJumpHeight / Mathf.Pow(_timeToReachJumpApex, 2);
             JumpVelocity = Mathf.Abs(Gravity) * _timeToReachJumpApex;
-            
-            Debug.Log($"JUMP PARAMETERS: Gravity = {Gravity} / JumpVelocity = {JumpVelocity}");
         }
 
         private void OnJumpAction(InputAction.CallbackContext context)
@@ -196,13 +237,39 @@ namespace PlayerController
             JumpRequests = Mathf.Clamp(JumpRequests - 1, 0, int.MaxValue);
         }
         #endregion
+        
+        #region Wall Sliding Functions
+        public bool CanWallSlide()
+        {
+            if ((LeftWallHit || RightWallHit) && MovementDirection != Vector2.zero)
+                return true;
+            
+            return false;
+        }
+        #endregion
 
         #region Animation Functions
         private void SetAnimationsHash()
         {
-            IdleHash = Animator.StringToHash("Idle");
-            GroundedHash = Animator.StringToHash("Grounded");
-            FallingHash = Animator.StringToHash("Falling");
+            _idleHash = Animator.StringToHash("Idle");
+            _groundedHash = Animator.StringToHash("Grounded");
+            _fallingHash = Animator.StringToHash("Falling");
+        }
+
+        public void AnimSetIdleVariable(bool value)
+        {
+            _animator.SetBool(_idleHash, value);
+        }
+
+        public void AnimSetGroundedVariable(bool value)
+        {
+            _animator.ResetTrigger(_fallingHash);
+            _animator.SetBool(_groundedHash, value);
+        }
+
+        public void AnimSetFallingTrigger()
+        {
+            _animator.SetTrigger(_fallingHash);
         }
         #endregion
         
@@ -216,7 +283,9 @@ namespace PlayerController
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            string subStateName = _currentRootState.CurrentSubState.Name;
+            string subStateName = "";
+            if (_currentRootState.CurrentSubState != null)
+                subStateName = _currentRootState.CurrentSubState.Name;
             GUILayout.Label($"<color=black><size=20>SubState: {subStateName}</size></color>");
             GUILayout.EndHorizontal();
             
@@ -226,8 +295,7 @@ namespace PlayerController
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            string speed = $"({Velocity.x}, {Velocity.y})";
-            GUILayout.Label($"<color=black><size=20>Speed: {speed}</size></color>");
+            GUILayout.Label($"<color=black><size=20>Speed: {Velocity}</size></color>");
             GUILayout.EndHorizontal();
         }
         #endif

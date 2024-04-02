@@ -9,10 +9,10 @@ namespace StateMachine.Hierarchical
         public String Name => StateKey.ToString();
         
         public bool IsRootState { get; protected set; }
-        protected BaseState<EState> _currentSuperState;
+        private BaseState<EState> _currentSuperState;
         
-        public BaseState<EState> CurrentSubState { get; private set; }
-        public BaseState<EState> CurrentSuperState { get; private set; }
+        public BaseState<EState> CurrentSubState { get; protected set; }
+        public BaseState<EState> CurrentSuperState { get; protected set; }
         public bool IsTransitioningSubState;
         
         public BaseState(EState key)

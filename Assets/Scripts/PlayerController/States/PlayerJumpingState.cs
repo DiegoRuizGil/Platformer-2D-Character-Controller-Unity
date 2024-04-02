@@ -18,17 +18,18 @@ namespace PlayerController.States
             
             InitializeSubState();
             PerformJump();
-            
-            _context.Animator.SetBool(_context.GroundedHash, false);
         }
 
         public override void UpdateState()
         {
             if (_timeInState <= _context.CheckGroundAfterJump)
                 _timeInState += Time.deltaTime;
-            
-            // check if touching ceiling -> vertical velocity = 0
-            if (_context.IsTouchingCeiling)
+
+            if (_context.IsTouchingLeftCorner)
+                _context.transform.position -= new Vector3(_context.CornerDistanceCorrection, 0f, 0f);
+            else if (_context.IsTouchingRightCorner)
+                _context.transform.position += new Vector3(_context.CornerDistanceCorrection, 0f, 0f);
+            else if (_context.IsTouchingCeiling)
                 _context.SetVerticalVelocity(0f);
             
             HandleGravity();
@@ -38,8 +39,9 @@ namespace PlayerController.States
 
         public override PlayerStates GetNextState()
         {
-            if (_context.IsGrounded && _timeInState >= _context.CheckGroundAfterJump)
-                return PlayerStates.Grounded;
+            // poder pasar al estado graunded desde jumping tiene sentido?
+            // if (_context.IsGrounded && _timeInState >= _context.CheckGroundAfterJump)
+            //     return PlayerStates.Grounded;
 
             if (_context.Velocity.y < 0)
                 return PlayerStates.Falling;

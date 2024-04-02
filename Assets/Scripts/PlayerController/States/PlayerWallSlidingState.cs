@@ -2,36 +2,22 @@ using UnityEngine;
 
 namespace PlayerController.States
 {
-    public class PlayerFallingState : PlayerBaseState, IHandleGravity
+    public class PlayerWallSlidingState : PlayerBaseState, IHandleGravity
     {
-        private readonly float _fallGravity;
-        private float _fallingTimer;
-        
-        public PlayerFallingState(PlayerStates key, PlayerStateMachine context)
+        public PlayerWallSlidingState(PlayerStates key, PlayerStateMachine context)
             : base(key, context)
         {
             IsRootState = true;
-            _fallGravity = context.Gravity * context.FallGravityMultiplier;
         }
 
         public override void EnterState()
         {
+            _context.SetVerticalVelocity(0f);
             InitializeSubState();
-
-            _fallingTimer = 0f;
         }
 
         public override void UpdateState()
         {
-            if (_fallingTimer <= _context.CoyoteTime)
-                _fallingTimer += Time.deltaTime;
-            else
-            {
-                _context.HasCoyoteTime = false;
-                _context.AnimSetFallingTrigger();
-            }
-                
-            
             HandleGravity();
         }
 
@@ -41,16 +27,15 @@ namespace PlayerController.States
         {
             if (_context.IsGrounded)
                 return PlayerStates.Grounded;
-            
-            if (_context.JumpRequests > 0 && _context.HasCoyoteTime)
+
+            if (_context.JumpRequests > 0)
             {
                 _context.ManageJumpRequest();
-                _context.HasCoyoteTime = false;
-                return PlayerStates.Jumping;
+                return PlayerStates.WallJumping;
             }
-            
-            if (_context.CanWallSlide())
-                return PlayerStates.WallSliding;
+
+            if (!_context.LeftWallHit && !_context.RightWallHit)
+                return PlayerStates.Falling;
             
             return StateKey;
         }
@@ -61,10 +46,10 @@ namespace PlayerController.States
                 ? _context.States[PlayerStates.Idle]
                 : _context.States[PlayerStates.Moving]);
         }
-
+        
         public void HandleGravity()
         {
-            float ySpeed = _context.Velocity.y + _fallGravity * Time.deltaTime;
+            float ySpeed = _context.WallSlidingVelocity * -1f;
             _context.SetVerticalVelocity(ySpeed);
         }
     }

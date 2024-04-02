@@ -15,14 +15,14 @@ namespace PlayerController.States
             InitializeSubState();
             HandleGravity();
             
-            _context.Animator.SetBool(_context.GroundedHash, true);
+            _context.AnimSetGroundedVariable(true);
         }
 
         public override void UpdateState() { }
 
         public override void ExitState()
         {
-            _context.Animator.SetBool(_context.GroundedHash, false);
+            _context.AnimSetGroundedVariable(false);
         }
 
         public override PlayerStates GetNextState()
@@ -33,7 +33,7 @@ namespace PlayerController.States
                 return PlayerStates.Falling;
             }
 
-            if (_context.JumpRequests > 0 && _context.IsGrounded)
+            if (_context.JumpRequests > 0 && _context.IsGrounded) // segunda comprobacion del if es necesaria?
             {
                 _context.ManageJumpRequest();
                 _context.HasCoyoteTime = false;
