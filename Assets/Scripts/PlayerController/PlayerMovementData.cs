@@ -52,6 +52,8 @@ namespace PlayerController
         public float jumpTimeToApex;
         [Tooltip("The actual force applied to the player when jumping")]
         [ReadOnly] public float jumpForce;
+        [Space(5)]
+        public int additionalJumps;
 
         [Header("BOTH JUMPS")]
         [Tooltip("Multiplier to increase gravity if the player releases the jump button while jumping")]
@@ -81,6 +83,7 @@ namespace PlayerController
         public float slideSpeed;
         [Tooltip("The speed at which the player accelerates to max speed, can be set to runMaxSpeed to instant acceleration down to 0 for none at all")]
         public float slideAccel;
+        [Range(0f, 0.1f)] public float wallSlideReleaseTime;
 
         [Header("ASSISTS")]
         [Range(0.01f, 0.5f)] public float coyoteTime;

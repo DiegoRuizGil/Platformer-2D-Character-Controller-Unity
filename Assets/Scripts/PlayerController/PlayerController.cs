@@ -43,11 +43,17 @@ namespace PlayerController
         
         #region Jump Parameters
         private float _lastPressedJumpTime;
+        [SerializeField, Space(10)] private int _additionalJumps;
         public bool IsGrounded => _raycastInfo.HitInfo.Below;
         public bool IsTouchingCeiling => _raycastInfo.HitInfo.Above;
         public bool JumpRequest { get; private set; }
         public bool HandleLongJumps { get; private set; }
         public bool IsActiveCoyoteTime { get; set; }
+        public int AdditionalJumpsAvailable
+        {
+            get => _additionalJumps;
+            set => _additionalJumps = Mathf.Clamp(value, 0, Data.additionalJumps);
+        }
         #endregion
 
         // #region Corners Detection Properties
@@ -99,6 +105,8 @@ namespace PlayerController
             States.Add(PlayerStates.Grounded, new PlayerGroundedState(PlayerStates.Grounded, this));
             States.Add(PlayerStates.Jumping, new PlayerJumpingState(PlayerStates.Jumping, this));
             States.Add(PlayerStates.Falling, new PlayerFallingState(PlayerStates.Falling, this));
+            States.Add(PlayerStates.WallSliding, new PlayerWallSlidingState(PlayerStates.WallSliding, this));
+            States.Add(PlayerStates.WallJumping, new PlayerWallJumpingState(PlayerStates.WallJumping, this));
             
             _currentState = States[PlayerStates.Grounded];
         }
@@ -128,13 +136,27 @@ namespace PlayerController
         }
         
         #region Movement Functions
-        public void Run(float lerpAmount, float accelRate, bool addBonusJumpApex)
+        public void Run(float lerpAmount, bool canAddBonusJumpApex)
         {
             float targetSpeed = MovementDirection.x * Data.runMaxSpeed;
             // smooths change
             targetSpeed = Mathf.Lerp(_rb2d.velocity.x, targetSpeed, lerpAmount);
 
-            if (addBonusJumpApex)
+            float accelRate;
+            if (IsGrounded)
+            {
+                accelRate = Mathf.Abs(MovementDirection.x) > 0.01f
+                    ? Data.runAccelAmount
+                    : Data.runDecelAmount;
+            }
+            else
+            {
+                accelRate = Mathf.Abs(MovementDirection.x) > 0.01f
+                    ? Data.runAccelAmount * Data.accelInAirMult
+                    : Data.runDecelAmount * Data.decelInAirMult;
+            }
+            
+            if (canAddBonusJumpApex && Mathf.Abs(_rb2d.velocity.y) < Data.jumpHangTimeThreshold)
             {
                 // makes the jump feels a bit more bouncy, responsive and natural
                 accelRate *= Data.jumpHangAcceleration;
@@ -155,6 +177,21 @@ namespace PlayerController
             float movement = speedDif * accelRate;
             
             _rb2d.AddForce(movement * Vector2.right, ForceMode2D.Force);
+        }
+
+        public void Slide()
+        {
+            // remove the remaining upwards impulse
+            if (_rb2d.velocity.y > 0)
+                _rb2d.AddForce(-_rb2d.velocity.y * Vector2.up, ForceMode2D.Impulse);
+
+            float speedDif = Data.slideSpeed - _rb2d.velocity.y;
+            float movement = speedDif * Data.slideAccel;
+            
+            //The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigidbodies.
+            movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif)  * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
+            
+            _rb2d.AddForce(movement * Vector2.up);
         }
         
         public void FlipSprite()
@@ -186,6 +223,25 @@ namespace PlayerController
                 force -= _rb2d.velocity.y;
             
             _rb2d.AddForce(Vector2.up * force, ForceMode2D.Impulse);
+        }
+
+        public void WallJump(int dir)
+        {
+            Vector2 force = Data.wallJumpForce;
+            force.x *= dir;
+
+            if (Mathf.Sign(_rb2d.velocity.x) != Mathf.Sign(force.x))
+                force.x -= _rb2d.velocity.x;
+
+            if (_rb2d.velocity.y < 0)
+                force.y -= _rb2d.velocity.y;
+            
+            _rb2d.AddForce(force, ForceMode2D.Impulse);
+        }
+
+        public void ResetAdditionalJumps()
+        {
+            AdditionalJumpsAvailable = Data.additionalJumps;
         }
         
         private void OnJumpAction(InputAction.CallbackContext context)
@@ -252,12 +308,11 @@ namespace PlayerController
         {
             GUILayout.BeginHorizontal();
             string rootStateName = _currentState.Name;
-            GUILayout.Label($"<color=black><size=20>RootState: {rootStateName}</size></color>");
+            GUILayout.Label($"<color=black><size=20>State: {rootStateName}</size></color>");
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            string xInput = $"{MovementDirection.x}";
-            GUILayout.Label($"<color=black><size=20>X Input: {xInput}</size></color>");
+            GUILayout.Label($"<color=black><size=20>Input: {MovementDirection}</size></color>");
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();

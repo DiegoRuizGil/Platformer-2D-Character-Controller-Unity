@@ -4,18 +4,16 @@ namespace PlayerController.States
 {
     public class PlayerGroundedState : PlayerBaseState
     {
-        private readonly float _lerpAmount;
-        private readonly bool _addBonusJumpApex;
-
         public PlayerGroundedState(PlayerStates key, PlayerController context)
             : base(key, context)
         {
             _lerpAmount = 1f;
-            _addBonusJumpApex = false;
+            _canAddBonusJumpApex = false;
         }
 
         public override void EnterState()
         {
+            Context.ResetAdditionalJumps();
             Context.SetGravityScale(Context.Data.gravityScale);
         }
 
@@ -29,11 +27,7 @@ namespace PlayerController.States
 
         public override void FixedUpdateState()
         {
-            float accelRate = Mathf.Abs(Context.MovementDirection.x) > 0.01f
-                ? Context.Data.runAccelAmount
-                : Context.Data.runDecelAmount;
-            
-            Context.Run(_lerpAmount, accelRate, _addBonusJumpApex);
+            Context.Run(_lerpAmount, _canAddBonusJumpApex);
         }
 
         public override void ExitState() { }

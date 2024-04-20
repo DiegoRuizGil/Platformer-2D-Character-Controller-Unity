@@ -2,19 +2,19 @@ using UnityEngine;
 
 namespace PlayerController.States
 {
-    public class PlayerJumpingState : PlayerBaseState
+    public class PlayerWallJumpingState : PlayerBaseState
     {
-        public PlayerJumpingState(PlayerStates key, PlayerController context)
+        public PlayerWallJumpingState(PlayerStates key, PlayerController context)
             : base(key, context)
         {
-            _lerpAmount = 1f;
+            _lerpAmount = Context.Data.wallJumpRunLerp;
             _canAddBonusJumpApex = true;
         }
 
         public override void EnterState()
         {
-            Context.SetGravityScale(Context.Data.gravityScale);
-            Context.Jump();
+            int dir = Context.LeftWallHit ? 1 : -1;
+            Context.WallJump(dir);
         }
 
         public override void UpdateState()
@@ -45,7 +45,7 @@ namespace PlayerController.States
             if (Context.Velocity.y < 0)
                 return PlayerStates.Falling;
             
-            return StateKey;
+            return PlayerStates.WallJumping;
         }
     }
 }

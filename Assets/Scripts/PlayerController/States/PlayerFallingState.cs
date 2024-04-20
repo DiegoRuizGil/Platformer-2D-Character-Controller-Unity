@@ -1,24 +1,20 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace PlayerController.States
 {
     public class PlayerFallingState : PlayerBaseState
     {
-        private readonly float _lerpAmount;
         private float _timeInState;
 
         public PlayerFallingState(PlayerStates key, PlayerController context)
             : base(key, context)
         {
             _lerpAmount = 1f;
+            _canAddBonusJumpApex = true;
         }
 
         public override void EnterState()
         {
-            float gravityScale = Context.Data.gravityScale * Context.Data.fallGravityMult;
-            Context.SetGravityScale(gravityScale);
-
             _timeInState = 0f;
         }
 
@@ -34,17 +30,13 @@ namespace PlayerController.States
                 Context.IsActiveCoyoteTime = false;
             }
             
-            // probar a implementar el fastFallGravityMult cuando se pulsa hacia abajo
-            if (Context.updateInPlayMode)
-            {
-                float gravityScale = Context.Data.gravityScale;
-                if (Context.MovementDirection.y < 0) // higher gravity if holding down
-                    gravityScale *= Context.Data.fastFallGravityMult;
-                else
-                    gravityScale *= Context.Data.fallGravityMult;
+            float gravityScale = Context.Data.gravityScale;
+            if (Context.MovementDirection.y < 0) // higher gravity if holding down
+                gravityScale *= Context.Data.fastFallGravityMult;
+            else
+                gravityScale *= Context.Data.fallGravityMult;
                 
-                Context.SetGravityScale(gravityScale);
-            }
+            Context.SetGravityScale(gravityScale);
         }
 
         public override void FixedUpdateState()
@@ -59,29 +51,40 @@ namespace PlayerController.States
                 Context.Velocity.x,
                 Mathf.Max(Context.Velocity.y, terminalVelocity));
             
-            float accelRate = Mathf.Abs(Context.MovementDirection.x) > 0.01f
-                ? Context.Data.runAccelAmount * Context.Data.accelInAirMult
-                : Context.Data.runDecelAmount * Context.Data.decelInAirMult;
-
-            bool addBonusJumpApex =
-                Mathf.Abs(Context.Velocity.y) < Context.Data.jumpHangTimeThreshold; 
-            
-            Context.Run(_lerpAmount, accelRate, addBonusJumpApex);
+            Context.Run(_lerpAmount, _canAddBonusJumpApex);
         }
 
-        public override void ExitState() { }
+        public override void ExitState()
+        {
+            Context.IsActiveCoyoteTime = false;
+        }
 
         public override PlayerStates GetNextState()
         {
             if (Context.IsGrounded)
                 return PlayerStates.Grounded;
             
-            // implementar coyote time => jumping
-            if (Context.JumpRequest && Context.IsActiveCoyoteTime)
+            // if (Context.JumpRequest && Context.IsActiveCoyoteTime)
+            // {
+            //     Context.IsActiveCoyoteTime = false;
+            //     return PlayerStates.Jumping;
+            // }
+
+            if (Context.JumpRequest)
             {
-                Context.IsActiveCoyoteTime = false;
-                return PlayerStates.Jumping;
+                if (Context.IsActiveCoyoteTime)
+                    return PlayerStates.Jumping;
+
+                if (Context.AdditionalJumpsAvailable > 0)
+                {
+                    Context.AdditionalJumpsAvailable--;
+                    return PlayerStates.Jumping;
+                }
             }
+
+            if ((Context.LeftWallHit || Context.RightWallHit)
+                && Context.MovementDirection != Vector2.zero)
+                return PlayerStates.WallSliding;
             
             return StateKey;
         }

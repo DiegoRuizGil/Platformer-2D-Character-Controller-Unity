@@ -1030,7 +1030,7 @@ Animator:
   m_GameObject: {fileID: 1500737705}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: cdb7c2fb2a6039a40afaf607eeaf6896, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1055,6 +1055,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Data>k__BackingField: {fileID: 11400000, guid: e0b96f3966ec55549b4c9788f9f2dcac, type: 2}
   _spriteRenderer: {fileID: 620732483}
+  updateInPlayMode: 0
 --- !u!114 &1500737713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3979,6 +3980,16 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
+  - first: {x: 8, y: 11, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 7
+      m_TileSpriteIndex: 7
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
   - first: {x: 9, y: 11, z: 0}
     second:
       serializedVersion: 2
@@ -4055,7 +4066,7 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: ebb04c796935ff349956ff30bf515073, type: 2}
   - m_RefCount: 4
     m_Data: {fileID: 11400000, guid: 6106597909d47804dad36a5aab5d99b8, type: 2}
-  - m_RefCount: 3
+  - m_RefCount: 4
     m_Data: {fileID: 11400000, guid: bb3520a55781a954abe89b92bcdc313f, type: 2}
   - m_RefCount: 0
     m_Data: {fileID: 0}
@@ -4080,7 +4091,7 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 4
     m_Data: {fileID: 21300004, guid: 261212b977f594d5dbc48631a5c1295c, type: 3}
-  - m_RefCount: 3
+  - m_RefCount: 4
     m_Data: {fileID: 21300000, guid: 261212b977f594d5dbc48631a5c1295c, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
@@ -4091,7 +4102,7 @@ Tilemap:
   - m_RefCount: 12
     m_Data: {fileID: 21300046, guid: 261212b977f594d5dbc48631a5c1295c, type: 3}
   m_TileMatrixArray:
-  - m_RefCount: 279
+  - m_RefCount: 280
     m_Data:
       e00: 1
       e01: 0
@@ -4110,7 +4121,7 @@ Tilemap:
       e32: 0
       e33: 1
   m_TileColorArray:
-  - m_RefCount: 279
+  - m_RefCount: 280
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -4221,9 +4232,9 @@ CompositeCollider2D:
         Y: 0
     - - X: 130000000
         Y: 120000000
-      - X: 90000000
+      - X: 80000000
         Y: 120000000
-      - X: 90000000
+      - X: 80000000
         Y: 110000000
       - X: 120000000
         Y: 110000000
@@ -4307,8 +4318,8 @@ CompositeCollider2D:
       - {x: 16.000029, y: 0}
     - - {x: 12.99997, y: 1}
       - {x: 12.99997, y: 12}
-      - {x: 9, y: 11.99997}
-      - {x: 9.00003, y: 11}
+      - {x: 8, y: 11.99997}
+      - {x: 8.00003, y: 11}
       - {x: 12, y: 10.99997}
       - {x: 12.00003, y: 1}
     - - {x: 1.9999708, y: 9}

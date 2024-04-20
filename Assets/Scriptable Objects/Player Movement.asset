@@ -17,7 +17,7 @@ MonoBehaviour:
   fallGravityMult: 2
   maxFallSpeed: 20
   fastFallGravityMult: 1
-  maxFastFallSpeed: 20
+  maxFastFallSpeed: 30
   runMaxSpeed: 9.5
   runAcceleration: 9.5
   runDeceleration: 9.5
@@ -29,6 +29,7 @@ MonoBehaviour:
   jumpHeight: 4.5
   jumpTimeToApex: 0.4
   jumpForce: 22.5
+  additionalJumps: 1
   jumpCutGravity: 3.5
   jumpHangGravityMult: 1
   jumpHangTimeThreshold: 0
@@ -38,7 +39,8 @@ MonoBehaviour:
   wallJumpRunLerp: 0.075
   wallJumpTime: 0.3
   doTurnOnWallJump: 0
-  slideSpeed: -12
+  slideSpeed: -9
   slideAccel: 12
+  wallSlideReleaseTime: 0.05
   coyoteTime: 0.2
   jumpInputBufferTime: 0.2
