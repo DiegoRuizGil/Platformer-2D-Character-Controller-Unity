@@ -1,74 +1,60 @@
+using UnityEditor.Timeline;
 using UnityEngine;
 
 namespace PlayerController.States
 {
-    public class PlayerJumpingState : PlayerBaseState, IHandleGravity
+    public class PlayerJumpingState : PlayerBaseState
     {
-        private float _timeInState;
-        
-        public PlayerJumpingState(PlayerStates key, PlayerStateMachine context)
+        private readonly float _lerpAmount;
+
+        public PlayerJumpingState(PlayerStates key, PlayerController context)
             : base(key, context)
         {
-            IsRootState = true;
+            _lerpAmount = 1f;
         }
 
         public override void EnterState()
         {
-            _timeInState = 0f;
-            
-            InitializeSubState();
-            PerformJump();
+            Context.SetGravityScale(Context.Data.gravityScale);
+            Context.Jump();
         }
 
         public override void UpdateState()
         {
-            if (_timeInState <= _context.CheckGroundAfterJump)
-                _timeInState += Time.deltaTime;
-
-            if (_context.IsTouchingLeftCorner)
-                _context.transform.position -= new Vector3(_context.CornerDistanceCorrection, 0f, 0f);
-            else if (_context.IsTouchingRightCorner)
-                _context.transform.position += new Vector3(_context.CornerDistanceCorrection, 0f, 0f);
-            else if (_context.IsTouchingCeiling)
-                _context.SetVerticalVelocity(0f);
+            float gravityScale = Context.Data.gravityScale;
+            if (!Context.HandleLongJumps)
+            {
+                // set higher gravity when releasing the jump button
+                gravityScale *= Context.Data.jumpCutGravity;
+            }
+            else if (Mathf.Abs(Context.Velocity.y) < Context.Data.jumpHangTimeThreshold)
+            {
+                gravityScale *= Context.Data.jumpHangGravityMult;
+            }
             
-            HandleGravity();
+            Context.SetGravityScale(gravityScale);
+        }
+
+        public override void FixedUpdateState()
+        {
+            float accelRate = Mathf.Abs(Context.MovementDirection.x) > 0.01f
+                ? Context.Data.runAccelAmount * Context.Data.accelInAirMult
+                : Context.Data.runDecelAmount * Context.Data.decelInAirMult;
+
+            bool addBonusJumpApex =
+                Mathf.Abs(Context.Velocity.y) < Context.Data.jumpHangTimeThreshold; 
+            
+            Context.Run(_lerpAmount, accelRate, addBonusJumpApex);
         }
 
         public override void ExitState() { }
 
         public override PlayerStates GetNextState()
         {
-            // poder pasar al estado graunded desde jumping tiene sentido?
-            // if (_context.IsGrounded && _timeInState >= _context.CheckGroundAfterJump)
-            //     return PlayerStates.Grounded;
-
-            if (_context.Velocity.y < 0)
+            if (Context.Velocity.y < 0)
                 return PlayerStates.Falling;
             
             return StateKey;
-        }
-
-        protected override void InitializeSubState()
-        {
-            SetSubState(_context.MovementDirection == Vector2.zero
-                ? _context.States[PlayerStates.Idle]
-                : _context.States[PlayerStates.Moving]);
-        }
-
-        private void PerformJump()
-        {
-            _context.SetVerticalVelocity(_context.JumpVelocity);
-        }
-
-        public void HandleGravity()
-        {
-            float gravity = _context.Gravity;
-            if (!_context.HandleLongJumps)
-                gravity *= _context.LowJumpGravityMultiplier;
-
-            float ySpeed = _context.Velocity.y + gravity * Time.deltaTime;
-            _context.SetVerticalVelocity(ySpeed);
         }
     }
 }

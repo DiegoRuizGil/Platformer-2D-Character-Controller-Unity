@@ -22,7 +22,7 @@ namespace PlayerController
         [Header("Debug")]
         [SerializeField] private bool _showDebugRays = true;
         
-        private RaycastHitInfo _hitInfo;
+        [SerializeField] private RaycastHitInfo _hitInfo;
         private BoxCollider2D _collider;
 
         private float _verticalRaySpacing;

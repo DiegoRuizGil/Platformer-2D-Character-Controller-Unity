@@ -1,15 +1,20 @@
-using StateMachine.Hierarchical;
+using StateMachine;
 
 namespace PlayerController.States
 {
+    public enum PlayerStates
+    {
+        Grounded, Jumping, Falling
+    }
+    
     public abstract class PlayerBaseState : BaseState<PlayerStates>
     {
-        protected PlayerStateMachine _context;
+        public PlayerController Context { get; private set; }
         
-        protected PlayerBaseState(PlayerStates key, PlayerStateMachine context)
+        protected PlayerBaseState(PlayerStates key, PlayerController context)
             : base(key)
         {
-            _context = context;
+            Context = context;
         }
     }
 }
