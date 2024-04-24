@@ -58,6 +58,9 @@ namespace PlayerController.States
             if (!Context.LeftWallHit && !Context.RightWallHit)
                 return PlayerStates.Falling;
             
+            if (Context.DashRequest && Context.CanDash)
+                return PlayerStates.Dashing;
+            
             return PlayerStates.WallSliding;
         }
     }

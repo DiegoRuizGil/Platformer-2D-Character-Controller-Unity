@@ -40,8 +40,6 @@ namespace PlayerController
         [Range(0, 1)] public float accelInAirMult;
         [Tooltip("Multiplier applied to deceleration rate when airborne")]
         [Range(0, 1)] public float decelInAirMult;
-        [Space(5)]
-        public bool doConserveMomentum = true;
 
         [Space(20)]
         
@@ -73,8 +71,6 @@ namespace PlayerController
         [Range(0, 1)] public float wallJumpRunLerp;
         [Tooltip("Time after wall jumping the player's movement is slowed for")]
         [Range(0, 1)] public float wallJumpTime;
-        [Tooltip("Player will rotate to face wall jumping direction")]
-        public bool doTurnOnWallJump;
 
         [Space(20)]
         
@@ -85,9 +81,16 @@ namespace PlayerController
         public float slideAccel;
         [Range(0f, 0.1f)] public float wallSlideReleaseTime;
 
+        [Header("DASH")]
+        public float dashSpeed;
+        public float dashTime;
+        public float dashRefillTime; // after dashing
+        public float dashSleepTime;
+
         [Header("ASSISTS")]
         [Range(0.01f, 0.5f)] public float coyoteTime;
         [Range(0.01f, 0.5f)] public float jumpInputBufferTime;
+        [Range(0.01f, 0.5f)] public float dashInputBufferTime;
 
         private void OnValidate()
         {

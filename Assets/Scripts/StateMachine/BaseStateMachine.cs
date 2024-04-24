@@ -30,7 +30,7 @@ namespace StateMachine
 
         protected abstract void SetStates();
         
-        protected void UpdateState()
+        private void UpdateState()
         {
             EState nextStateKey = _currentState.GetNextState();
             

@@ -15,6 +15,8 @@ namespace PlayerController.States
         {
             Context.ResetAdditionalJumps();
             Context.SetGravityScale(Context.Data.gravityScale);
+
+            Context.IsDashActive = true;
         }
 
         public override void UpdateState()
@@ -45,6 +47,9 @@ namespace PlayerController.States
                 Context.IsActiveCoyoteTime = false;
                 return PlayerStates.Jumping;
             }
+
+            if (Context.DashRequest && Context.CanDash)
+                return PlayerStates.Dashing;
             
             return StateKey;
         }

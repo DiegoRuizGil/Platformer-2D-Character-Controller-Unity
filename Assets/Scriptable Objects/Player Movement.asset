@@ -25,11 +25,10 @@ MonoBehaviour:
   runDecelAmount: 50
   accelInAirMult: 1
   decelInAirMult: 1
-  doConserveMomentum: 0
   jumpHeight: 4.5
   jumpTimeToApex: 0.4
   jumpForce: 22.5
-  additionalJumps: 1
+  additionalJumps: 0
   jumpCutGravity: 3.5
   jumpHangGravityMult: 1
   jumpHangTimeThreshold: 0
@@ -38,9 +37,13 @@ MonoBehaviour:
   wallJumpForce: {x: 8.5, y: 20}
   wallJumpRunLerp: 0.075
   wallJumpTime: 0.3
-  doTurnOnWallJump: 0
   slideSpeed: -9
   slideAccel: 12
   wallSlideReleaseTime: 0.05
+  dashSpeed: 20
+  dashTime: 0.15
+  dashRefillTime: 0.2
+  dashSleepTime: 0.05
   coyoteTime: 0.2
   jumpInputBufferTime: 0.2
+  dashInputBufferTime: 0.1

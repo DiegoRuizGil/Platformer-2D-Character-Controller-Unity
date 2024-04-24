@@ -45,6 +45,9 @@ namespace PlayerController.States
             if (Context.Velocity.y < 0)
                 return PlayerStates.Falling;
             
+            if (Context.DashRequest && Context.CanDash)
+                return PlayerStates.Dashing;
+            
             return PlayerStates.WallJumping;
         }
     }

@@ -1,3 +1,4 @@
+using System.Collections;
 using PlayerController.States;
 using StateMachine;
 using UnityEngine;
@@ -10,24 +11,25 @@ namespace PlayerController
     {
         #region Serialized Fields
         [field: SerializeField] public PlayerMovementData Data { get; private set; }
-        [Header("Dependencies")]
-        [SerializeField] private SpriteRenderer _spriteRenderer;
-
         [Space(10)]
         public bool updateInPlayMode;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
         #endregion
-
+        
         #region Private variables
         private Rigidbody2D _rb2d;
         private RaycastInfo _raycastInfo;
         
         private PlayerInputActions _playerInputActions;
         private InputAction _movementAction;
-
-        private Animator _animator;
-        private int _idleHash;
-        private int _groundedHash;
-        private int _fallingHash;
+        #endregion
+        
+        #region Dash Parameters
+        private float _lastPressedDashTime;
+        private bool _isDashRefilling;
+        public bool IsDashActive { get; set; } // set to true when grounded, and false when dashing
+        public bool CanDash => IsDashActive && !_isDashRefilling;
+        public bool DashRequest { get; private set; }
         #endregion
         
         #region Movement Parameters
@@ -39,13 +41,14 @@ namespace PlayerController
             get => _rb2d.velocity;
             set => _rb2d.velocity = value;
         }
+        public bool IsFacingLeft => _spriteRenderer.flipX;
         #endregion
         
         #region Jump Parameters
         private float _lastPressedJumpTime;
-        [SerializeField, Space(10)] private int _additionalJumps;
+        private int _additionalJumps;
         public bool IsGrounded => _raycastInfo.HitInfo.Below;
-        public bool IsTouchingCeiling => _raycastInfo.HitInfo.Above;
+        public bool IsWallSliding => (LeftWallHit || RightWallHit) && !IsGrounded;
         public bool JumpRequest { get; private set; }
         public bool HandleLongJumps { get; private set; }
         public bool IsActiveCoyoteTime { get; set; }
@@ -70,9 +73,6 @@ namespace PlayerController
             _raycastInfo = GetComponent<RaycastInfo>();
 
             _playerInputActions = new PlayerInputActions();
-
-            _animator = GetComponent<Animator>();
-            SetAnimationsHash();
         }
 
         protected override void Start()
@@ -86,6 +86,7 @@ namespace PlayerController
             base.Update();
             
             ManageJumpBuffer();
+            ManageDashBuffer();
         }
         
         private void OnEnable()
@@ -107,6 +108,7 @@ namespace PlayerController
             States.Add(PlayerStates.Falling, new PlayerFallingState(PlayerStates.Falling, this));
             States.Add(PlayerStates.WallSliding, new PlayerWallSlidingState(PlayerStates.WallSliding, this));
             States.Add(PlayerStates.WallJumping, new PlayerWallJumpingState(PlayerStates.WallJumping, this));
+            States.Add(PlayerStates.Dashing, new PlayerDashingState(PlayerStates.Dashing, this));
             
             _currentState = States[PlayerStates.Grounded];
         }
@@ -121,19 +123,18 @@ namespace PlayerController
             _playerInputActions.Player.Jump.started += OnJumpAction;
             _playerInputActions.Player.Jump.canceled += OnJumpAction;
             _playerInputActions.Player.Jump.Enable();
+
+            _playerInputActions.Player.Dash.performed += OnDashAction;
+            _playerInputActions.Player.Dash.Enable();
         }
 
         private void DisableInput()
         {
             _movementAction.Disable();
             _playerInputActions.Player.Jump.Disable();
+            _playerInputActions.Player.Dash.Disable();
         }
         #endregion
-
-        public void SetGravityScale(float scale)
-        {
-            _rb2d.gravityScale = scale;
-        }
         
         #region Movement Functions
         public void Run(float lerpAmount, bool canAddBonusJumpApex)
@@ -145,13 +146,13 @@ namespace PlayerController
             float accelRate;
             if (IsGrounded)
             {
-                accelRate = Mathf.Abs(MovementDirection.x) > 0.01f
+                accelRate = Mathf.Abs(targetSpeed) > 0.01f
                     ? Data.runAccelAmount
                     : Data.runDecelAmount;
             }
             else
             {
-                accelRate = Mathf.Abs(MovementDirection.x) > 0.01f
+                accelRate = Mathf.Abs(targetSpeed) > 0.01f
                     ? Data.runAccelAmount * Data.accelInAirMult
                     : Data.runDecelAmount * Data.decelInAirMult;
             }
@@ -163,20 +164,14 @@ namespace PlayerController
                 targetSpeed *= Data.jumpHangMaxSpeedMult;
             }
             
-            // momemtun
-            if (Data.doConserveMomentum
-                && Mathf.Abs(_rb2d.velocity.x) > Mathf.Abs(targetSpeed)
-                && Mathf.Sign(_rb2d.velocity.x) == Mathf.Sign(targetSpeed)
-                && Mathf.Abs(targetSpeed) > 0.01f
-                && IsGrounded)
-            {
-                accelRate = 0;
-            }
-            
             float speedDif = targetSpeed - _rb2d.velocity.x;
             float movement = speedDif * accelRate;
             
             _rb2d.AddForce(movement * Vector2.right, ForceMode2D.Force);
+            // same as:
+            // _rb2d.velocity = new Vector2(
+            //      _rb2d.velocity.x + (Time.fixedDeltaTime * speedDif * accelRate) / _rb2d.mass,
+            //      _rb2d.velocity.y);
         }
 
         public void Slide()
@@ -192,22 +187,6 @@ namespace PlayerController
             movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif)  * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
             
             _rb2d.AddForce(movement * Vector2.up);
-        }
-        
-        public void FlipSprite()
-        {
-            if (!_spriteRenderer) return;
-
-            bool lookingLeft = _spriteRenderer.flipX;
-
-            if (MovementDirection.x < 0 && !lookingLeft)
-            {
-                _spriteRenderer.flipX = true;
-            }
-            else if (MovementDirection.x > 0 && lookingLeft)
-            {
-                _spriteRenderer.flipX = false;
-            }
         }
         #endregion
 
@@ -276,29 +255,57 @@ namespace PlayerController
             return false;
         }
         #endregion
-
-        #region Animation Functions
-        private void SetAnimationsHash()
+        
+        #region Dash Functions
+        public void RefillDash()
         {
-            _idleHash = Animator.StringToHash("Idle");
-            _groundedHash = Animator.StringToHash("Grounded");
-            _fallingHash = Animator.StringToHash("Falling");
+            StartCoroutine(nameof(PerformRefillDash));
+        }
+        
+        private IEnumerator PerformRefillDash()
+        {
+            _isDashRefilling = true;
+            yield return new WaitForSeconds(Data.dashRefillTime);
+            _isDashRefilling = false;
+        }
+        
+        private void OnDashAction(InputAction.CallbackContext context)
+        {
+            if (context.ReadValueAsButton())
+            {
+                DashRequest = true;
+                _lastPressedDashTime = Data.dashInputBufferTime;
+            }
         }
 
-        public void AnimSetIdleVariable(bool value)
+        private void ManageDashBuffer()
         {
-            _animator.SetBool(_idleHash, value);
+            if (!DashRequest) return;
+            
+            _lastPressedDashTime -= Time.deltaTime;
+            if (_lastPressedDashTime <= 0)
+            {
+                DashRequest = false;
+            }
+        }
+        #endregion
+        
+        #region General Methods
+        public void SetGravityScale(float scale)
+        {
+            _rb2d.gravityScale = scale;
         }
 
-        public void AnimSetGroundedVariable(bool value)
+        public void Sleep(float duration)
         {
-            _animator.ResetTrigger(_fallingHash);
-            _animator.SetBool(_groundedHash, value);
+            StartCoroutine(nameof(PerformSleep), duration);
         }
 
-        public void AnimSetFallingTrigger()
+        private IEnumerator PerformSleep(float duration)
         {
-            _animator.SetTrigger(_fallingHash);
+            Time.timeScale = 0;
+            yield return new WaitForSecondsRealtime(duration);
+            Time.timeScale = 1;
         }
         #endregion
         

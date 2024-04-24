@@ -64,12 +64,6 @@ namespace PlayerController.States
             if (Context.IsGrounded)
                 return PlayerStates.Grounded;
             
-            // if (Context.JumpRequest && Context.IsActiveCoyoteTime)
-            // {
-            //     Context.IsActiveCoyoteTime = false;
-            //     return PlayerStates.Jumping;
-            // }
-
             if (Context.JumpRequest)
             {
                 if (Context.IsActiveCoyoteTime)
@@ -85,6 +79,9 @@ namespace PlayerController.States
             if ((Context.LeftWallHit || Context.RightWallHit)
                 && Context.MovementDirection != Vector2.zero)
                 return PlayerStates.WallSliding;
+            
+            if (Context.DashRequest && Context.CanDash)
+                return PlayerStates.Dashing;
             
             return StateKey;
         }

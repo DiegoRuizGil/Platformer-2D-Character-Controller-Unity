@@ -36,8 +36,8 @@ namespace PlayerController
         [System.Serializable]
         public struct RaycastHitInfo
         {
-            public bool Left, Right, Above, Below;
-            public bool CornerLeft, CornerRight;
+            [ReadOnly] public bool Left, Right, Above, Below;
+            [ReadOnly] public bool CornerLeft, CornerRight;
 
             public void Reset()
             {
