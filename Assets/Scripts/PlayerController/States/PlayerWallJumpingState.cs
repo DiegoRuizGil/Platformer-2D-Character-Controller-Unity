@@ -18,7 +18,7 @@ namespace PlayerController.States
         }
 
         public override void UpdateState()
-        {
+        { 
             float gravityScale = Context.Data.gravityScale;
             if (Mathf.Abs(Context.Velocity.y) < Context.Data.jumpHangTimeThreshold)
             {

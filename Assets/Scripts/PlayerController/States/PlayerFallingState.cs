@@ -19,7 +19,7 @@ namespace PlayerController.States
         }
 
         public override void UpdateState()
-        {
+        { 
             // coyote time
             if (_timeInState <= Context.Data.coyoteTime)
             {

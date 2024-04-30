@@ -28,7 +28,7 @@ MonoBehaviour:
   jumpHeight: 4.5
   jumpTimeToApex: 0.4
   jumpForce: 22.5
-  additionalJumps: 0
+  additionalJumps: 1
   jumpCutGravity: 3.5
   jumpHangGravityMult: 1
   jumpHangTimeThreshold: 0

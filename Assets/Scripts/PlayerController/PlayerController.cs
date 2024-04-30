@@ -23,6 +23,8 @@ namespace PlayerController
         private PlayerInputActions _playerInputActions;
         private InputAction _movementAction;
         #endregion
+
+        public PlayerStates CurrentState => _currentState.StateKey;
         
         #region Dash Parameters
         private float _lastPressedDashTime;
@@ -41,7 +43,7 @@ namespace PlayerController
             get => _rb2d.velocity;
             set => _rb2d.velocity = value;
         }
-        public bool IsFacingLeft => _spriteRenderer.flipX;
+        public bool IsFacingRight { get; private set; }
         #endregion
         
         #region Jump Parameters
@@ -79,6 +81,8 @@ namespace PlayerController
         {
             base.Start();
             SetGravityScale(Data.gravityScale);
+
+            IsFacingRight = true;
         }
 
         protected override void Update()
@@ -87,8 +91,11 @@ namespace PlayerController
             
             ManageJumpBuffer();
             ManageDashBuffer();
+            
+            if (MovementDirection.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
+                SetDirectionToFace(MovementDirection.x > 0);
         }
-        
+
         private void OnEnable()
         {
             EnableInput();
@@ -306,6 +313,15 @@ namespace PlayerController
             Time.timeScale = 0;
             yield return new WaitForSecondsRealtime(duration);
             Time.timeScale = 1;
+        }
+        
+        public void SetDirectionToFace(bool isMovingRight)
+        {
+            if (isMovingRight != IsFacingRight)
+            {
+                // IsFacingRight = isMovingRight;
+                IsFacingRight = !IsFacingRight;
+            }
         }
         #endregion
         
