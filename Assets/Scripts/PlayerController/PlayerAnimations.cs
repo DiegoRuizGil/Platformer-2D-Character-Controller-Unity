@@ -20,8 +20,9 @@ namespace PlayerController
         private void Awake()
         {
             _player = GetComponent<PlayerController>();
-            
             _animator = GetComponent<Animator>();
+            
+            // set animations hashes
             _xSpeedHash = Animator.StringToHash("xSpeed");
             _ySpeedHash = Animator.StringToHash("ySpeed");
             _isGroundedHash = Animator.StringToHash("isGrounded");

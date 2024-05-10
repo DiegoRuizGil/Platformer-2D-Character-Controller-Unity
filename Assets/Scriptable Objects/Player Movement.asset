@@ -46,4 +46,4 @@ MonoBehaviour:
   dashSleepTime: 0.05
   coyoteTime: 0.2
   jumpInputBufferTime: 0.2
-  dashInputBufferTime: 0.1
+  dashInputBufferTime: 0.05

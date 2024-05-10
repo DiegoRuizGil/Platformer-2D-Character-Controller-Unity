@@ -12,17 +12,26 @@ namespace StateMachine
         protected BaseState<EState> _currentState;
         private bool _isTransitioningState;
 
+        /// <summary>
+        /// Make sure to call base.Start() in override if you need Start.
+        /// </summary>
         protected virtual void Start()
         {
             SetStates();
             _currentState?.EnterState();
         }
         
+        /// <summary>
+        /// Make sure to call base.Update() in override if you need Update.
+        /// </summary>
         protected virtual void Update()
         {
             UpdateState();
         }
 
+        /// <summary>
+        /// Make sure to call base.FixedUpdate() in override if you need Update.
+        /// </summary>
         protected virtual void FixedUpdate()
         {
             _currentState.FixedUpdateState();

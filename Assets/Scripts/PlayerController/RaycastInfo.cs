@@ -10,8 +10,6 @@ namespace PlayerController
         [SerializeField] private float _skinWidth = 0.015f;
         [Tooltip("Specifies the length of the raycasts used for collision detection")]
         [SerializeField] private float _rayLenght = 0.05f;
-        [Tooltip("Specifies the length of the raycasts used to detect corners at the top")]
-        [SerializeField] private float _cornersRayLenght = 0.1f;
         [Tooltip("Sets the number of raycasts to be cast for vertical collision detection")]
         [SerializeField] private int _verticalRayCount = 4;
         [Tooltip("Sets the number of raycasts to be cast for horizontal collision detection")]
@@ -28,7 +26,6 @@ namespace PlayerController
         private float _verticalRaySpacing;
         private float _horizontalRaySpacing;
 
-        private const int _cornersRayCount = 3;
         private float _cornersRaySpacing;
         
         public RaycastHitInfo HitInfo => _hitInfo;
@@ -37,7 +34,6 @@ namespace PlayerController
         public struct RaycastHitInfo
         {
             [ReadOnly] public bool Left, Right, Above, Below;
-            [ReadOnly] public bool CornerLeft, CornerRight;
 
             public void Reset()
             {
@@ -52,17 +48,105 @@ namespace PlayerController
         {
             _collider = GetComponent<BoxCollider2D>();
             
+            // calculate the space between each raycast
             SetVerticalRaySpacing();
             SetHorizontalRaySpacing();
-            SetCornersRaySpacing();
         }
 
         private void Update()
         {
+            // check for collisions
             CheckVerticalCollisions();
             CheckHorizontalCollisions();
-            CheckForCorners();
         }
+
+        #region Collisions
+        enum CollisionType
+        {
+            LowerVertical, UpperVertical, LeftHorizontal, RightHorizontal
+        }
+        
+        private void CheckForCollisions(CollisionType type)
+        {
+            Bounds bounds = _collider.bounds;
+            bounds.Expand(_skinWidth * -2);
+            
+            switch (type)
+            {
+                case CollisionType.LowerVertical:
+                    _hitInfo.Below = CheckForCollisions(
+                        _verticalRayCount,
+                        _verticalRaySpacing,
+                        new Vector2(bounds.min.x, bounds.min.y),
+                        Vector2.right,
+                        Vector2.down);
+                    break;
+                
+                case CollisionType.UpperVertical:
+                    _hitInfo.Above = CheckForCollisions(
+                        _verticalRayCount,
+                        _verticalRaySpacing,
+                        new Vector2(bounds.min.x, bounds.max.y),
+                        Vector2.right,
+                        Vector2.up);
+                    break;
+                
+                case CollisionType.LeftHorizontal:
+                    _hitInfo.Left = CheckForCollisions(
+                        _horizontalRayCount,
+                        _horizontalRaySpacing,
+                        new Vector2(bounds.min.x, bounds.min.y),
+                        Vector2.up,
+                        Vector2.left);
+                    break;
+                
+                case CollisionType.RightHorizontal:
+                    _hitInfo.Right = CheckForCollisions(
+                        _horizontalRayCount,
+                        _horizontalRaySpacing,
+                        new Vector2(bounds.max.x, bounds.min.y),
+                        Vector2.up,
+                        Vector2.right);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Check for raycast collisions
+        /// </summary>
+        /// <param name="rayCount">number of raycasts to be cast</param>
+        /// <param name="raySpacing">space between each raycast</param>
+        /// <param name="startRayOrigin">starting position of the first raycast on that side</param>
+        /// <param name="raycastShiftDirection">direction in which the position of the raycasts will be shifted</param>
+        /// <param name="raycastDirection">raycasts direction</param>
+        /// <returns>whether or not there has been a collision</returns>
+        private bool CheckForCollisions(int rayCount, float raySpacing, Vector2 startRayOrigin,
+            Vector2 raycastShiftDirection, Vector2 raycastDirection)
+        {
+            Bounds bounds = _collider.bounds;
+            bounds.Expand(_skinWidth * -2);
+            bool hasHit = false;
+
+            for (int i = 0; i < rayCount; i++)
+            {
+                Vector2 rayOrigin = startRayOrigin;
+                rayOrigin += raycastShiftDirection * (raySpacing * i);
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, raycastDirection, _rayLenght, _collisionLayers);
+
+                Color raycastColor = Color.red;
+                if (hit)
+                {
+                    hasHit = true;
+                    raycastColor = Color.green;
+                }
+                
+                if (_showDebugRays)
+                    Debug.DrawRay(rayOrigin, raycastDirection * _rayLenght, raycastColor);
+            }
+
+            return hasHit;
+        }
+        #endregion
 
         #region Vertical Raycasts
         private void SetVerticalRaySpacing()
@@ -76,60 +160,8 @@ namespace PlayerController
 
         private void CheckVerticalCollisions()
         {
-            CheckLowerVerticalCollisions();
-            CheckUpperVerticalCollisions();
-        }
-
-        private void CheckLowerVerticalCollisions()
-        {
-            Bounds bounds = _collider.bounds;
-            bounds.Expand(_skinWidth * -2);
-            bool hasHit = false;
-
-            for (int i = 0; i < _verticalRayCount; i++)
-            {
-                Vector2 rayOrigin = new Vector2(bounds.min.x, bounds.min.y);
-                rayOrigin += Vector2.right * (_verticalRaySpacing * i);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, _rayLenght, _collisionLayers);
-
-                Color raycastColor = Color.red;
-                if (hit)
-                {
-                    hasHit = true;
-                    raycastColor = Color.green;
-                }
-                
-                if (_showDebugRays)
-                    Debug.DrawRay(rayOrigin, Vector2.down * _rayLenght, raycastColor);
-            }
-
-            _hitInfo.Below = hasHit;
-        }
-        
-        private void CheckUpperVerticalCollisions()
-        {
-            Bounds bounds = _collider.bounds;
-            bounds.Expand(_skinWidth * -2);
-            bool hasHit = false;
-
-            for (int i = 0; i < _verticalRayCount; i++)
-            {
-                Vector2 rayOrigin = new Vector2(bounds.min.x, bounds.max.y);
-                rayOrigin += Vector2.right * (_verticalRaySpacing * i);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, _rayLenght, _collisionLayers);
-            
-                Color raycastColor = Color.red;
-                if (hit)
-                {
-                    hasHit = true;
-                    raycastColor = Color.green;
-                }
-                
-                if (_showDebugRays)
-                    Debug.DrawRay(rayOrigin, Vector2.up * _rayLenght, raycastColor);
-            }
-
-            _hitInfo.Above = hasHit;
+            CheckForCollisions(CollisionType.LowerVertical);
+            CheckForCollisions(CollisionType.UpperVertical);
         }
         #endregion
         
@@ -145,140 +177,8 @@ namespace PlayerController
         
         private void CheckHorizontalCollisions()
         {
-            CheckLeftHorizontalCollisions();
-            CheckRightHorizontalCollisions();
-        }
-
-        private void CheckLeftHorizontalCollisions()
-        {
-            Bounds bounds = _collider.bounds;
-            bounds.Expand(_skinWidth * -2);
-            bool hasHit = false;
-
-            for (int i = 0; i < _horizontalRayCount; i++)
-            {
-                Vector2 rayOrigin = new Vector2(bounds.min.x, bounds.min.y);
-                rayOrigin += Vector2.up * (_horizontalRaySpacing * i);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.left, _rayLenght, _collisionLayers);
-
-                Color raycastColor = Color.red;
-                if (hit)
-                {
-                    hasHit = true;
-                    raycastColor = Color.green;
-                }
-                
-                if (_showDebugRays)
-                    Debug.DrawRay(rayOrigin, Vector2.left * _rayLenght, raycastColor);
-            }
-
-            _hitInfo.Left = hasHit;
-        }
-        
-        private void CheckRightHorizontalCollisions()
-        {
-            Bounds bounds = _collider.bounds;
-            bounds.Expand(_skinWidth * -2);
-            bool hasHit = false;
-
-            for (int i = 0; i < _horizontalRayCount; i++)
-            {
-                Vector2 rayOrigin = new Vector2(bounds.max.x, bounds.min.y);
-                rayOrigin += Vector2.up * (_horizontalRaySpacing * i);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right, _rayLenght, _collisionLayers);
-            
-                Color raycastColor = Color.red;
-                if (hit)
-                {
-                    hasHit = true;
-                    raycastColor = Color.green;
-                }
-                
-                if (_showDebugRays)
-                    Debug.DrawRay(rayOrigin, Vector2.right * _rayLenght, raycastColor);
-            }
-
-            _hitInfo.Right = hasHit;
-        }
-        #endregion
-        
-        #region Corners Raycasts
-        private void SetCornersRaySpacing()
-        {
-            Bounds bounds = _collider.bounds;
-            bounds.Expand(_skinWidth * -2);
-    
-            _cornersRaySpacing = bounds.size.x / (_cornersRayCount - 1);
-        }
-        
-        private void CheckForCorners()
-        {
-            DrawCornersRays();
-            
-            Bounds bounds = _collider.bounds;
-            bounds.Expand(_skinWidth * -2);
-
-            // rays origin
-            Vector2 leftRayOrigin = new Vector2(bounds.min.x, bounds.max.y);
-            Vector2 middleRayOrigin = leftRayOrigin + Vector2.right * _cornersRaySpacing;
-            Vector2 rightRayOrigin = leftRayOrigin + Vector2.right * (_cornersRaySpacing * 2);
-
-            // racyasts hit
-            RaycastHit2D leftHit = Physics2D.Raycast(leftRayOrigin, Vector2.up, _cornersRayLenght, _collisionLayers);
-            RaycastHit2D middleHit = Physics2D.Raycast(middleRayOrigin, Vector2.up, _cornersRayLenght, _collisionLayers);
-            RaycastHit2D rightHit = Physics2D.Raycast(rightRayOrigin, Vector2.up, _cornersRayLenght, _collisionLayers);
-
-            if (!middleHit && !leftHit && !rightHit)
-            {
-                _hitInfo.CornerLeft = false;
-                _hitInfo.CornerRight = false;
-                return;
-            }
-            
-            // too far from corners
-            if (middleHit)
-            {
-                _hitInfo.CornerLeft = false;
-                _hitInfo.CornerRight = false;
-                return;
-            }
-            
-            if (leftHit)
-            {
-                _hitInfo.CornerLeft = false;
-                _hitInfo.CornerRight = true;
-                return;
-            }
-            
-            if (rightHit)
-            {
-                _hitInfo.CornerLeft = true;
-                _hitInfo.CornerRight = false;
-            }
-        }
-
-        private void DrawCornersRays()
-        {
-            if (!_showDebugRays) return;
-            
-            Bounds bounds = _collider.bounds;
-            bounds.Expand(_skinWidth * -2);
-
-            for (int i = 0; i < _cornersRayCount; i++)
-            {
-                Vector2 rayOrigin = new Vector2(bounds.min.x, bounds.max.y);
-                rayOrigin += Vector2.right * (_cornersRaySpacing * i);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, _cornersRayLenght, _collisionLayers);
-            
-                Color raycastColor = Color.blue;
-                if (hit)
-                {
-                    raycastColor = Color.yellow;
-                }
-                
-                if (_showDebugRays)
-                    Debug.DrawRay(rayOrigin, Vector2.up * _cornersRayLenght, raycastColor);
-            }
+            CheckForCollisions(CollisionType.LeftHorizontal);
+            CheckForCollisions(CollisionType.RightHorizontal);
         }
         #endregion
     }

@@ -58,9 +58,11 @@ namespace PlayerController
         public float jumpCutGravity;
         [Tooltip("Reduces gravity while close to the apex of the jump")]
         [Range(0, 1)] public float jumpHangGravityMult;
-        [Tooltip("Speeds (close to 0) where the player will experience extra 'jump hang'. The player's velocity.y is closest to 0 at the jump's apex ")]
+        [Tooltip("Speeds (close to 0) where the player will experience extra 'jump hang'. The player's velocity.y is closest to 0 at the jump's apex")]
         public float jumpHangTimeThreshold;
-        public float jumpHangAcceleration;
+        [Tooltip("Multiplier applied to acceleration rate during 'jump hang'")]
+        public float jumpHangAccelerationMult;
+        [Tooltip("Multiplier applied to speed during 'jump hang'")]
         public float jumpHangMaxSpeedMult;
 
         [Header("WALL JUMP")]
@@ -69,8 +71,6 @@ namespace PlayerController
         [Space(5)]
         [Tooltip("Reduces the effect of player's movement while wall jumping")]
         [Range(0, 1)] public float wallJumpRunLerp;
-        [Tooltip("Time after wall jumping the player's movement is slowed for")]
-        [Range(0, 1)] public float wallJumpTime;
 
         [Space(20)]
         
@@ -79,17 +79,25 @@ namespace PlayerController
         public float slideSpeed;
         [Tooltip("The speed at which the player accelerates to max speed, can be set to runMaxSpeed to instant acceleration down to 0 for none at all")]
         public float slideAccel;
+        [Tooltip("Time the input must be active to detach from the wall")]
         [Range(0f, 0.1f)] public float wallSlideReleaseTime;
 
         [Header("DASH")]
+        [Tooltip("Speed of the dash")]
         public float dashSpeed;
+        [Tooltip("Duration of the dash")]
         public float dashTime;
-        public float dashRefillTime; // after dashing
+        [Tooltip("Time to recharge the dash after dashing")]
+        public float dashRefillTime;
+        [Tooltip("Time that the timeScale will be set to 0 when a dash is performed")]
         public float dashSleepTime;
 
         [Header("ASSISTS")]
+        [Tooltip("Margin time to perform a jump while the player is falling")]
         [Range(0.01f, 0.5f)] public float coyoteTime;
+        [Tooltip("Margin time in which the jump input can be processed")]
         [Range(0.01f, 0.5f)] public float jumpInputBufferTime;
+        [Tooltip("Margin time in which the dash input can be processed")]
         [Range(0.01f, 0.5f)] public float dashInputBufferTime;
 
         private void OnValidate()
@@ -102,6 +110,8 @@ namespace PlayerController
             runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
             runDeceleration = Mathf.Clamp(runDeceleration, 0.01f, runMaxSpeed);
 
+            // Calculate are run acceleration & deceleration forces using formula:
+            //      amount = ((1 / Time.fixedDeltaTime) * acceleration) / runMaxSpeed
             runAccelAmount = (50 * runAcceleration) / runMaxSpeed;
             runDecelAmount = (50 * runDeceleration) / runMaxSpeed;
         }

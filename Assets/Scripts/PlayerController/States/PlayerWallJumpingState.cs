@@ -13,6 +13,7 @@ namespace PlayerController.States
 
         public override void EnterState()
         {
+            // set wall jump direction
             int dir = Context.LeftWallHit ? 1 : -1;
             Context.WallJump(dir);
         }
