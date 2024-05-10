@@ -11,9 +11,17 @@ namespace PlayerController
     {
         #region Serialized Fields
         [field: SerializeField] public PlayerMovementData Data { get; private set; }
-        [Space(10)]
-        public bool updateInPlayMode;
-        [SerializeField] private SpriteRenderer _spriteRenderer;
+
+        [Header("VFX points")]
+        [SerializeField] private Transform _bottonVFXPoint;
+        [SerializeField] private Transform _leftVFXPoint;
+        [SerializeField] private Transform _rightVFXPoint;
+        
+        [Header("VFX prefabs")]
+        [SerializeField] private Transform _jumpDustVFXPrefab;
+        [SerializeField] private Transform _dashVFXPrefab;
+        [SerializeField] private Transform _flipDirectionVFXPrefab;
+        [SerializeField] private Transform _fallDustVFXPrefab;
         #endregion
         
         #region Private variables
@@ -60,12 +68,6 @@ namespace PlayerController
             set => _additionalJumps = Mathf.Clamp(value, 0, Data.additionalJumps);
         }
         #endregion
-
-        // #region Corners Detection Properties
-        // public float CornerDistanceCorrection => _cornerDistanceCorrection;
-        // public bool IsTouchingLeftCorner => _raycastInfo.HitInfo.CornerLeft;
-        // public bool IsTouchingRightCorner => _raycastInfo.HitInfo.CornerRight;
-        // #endregion
 
         #region Unity Functions
         private void Awake()
@@ -209,6 +211,8 @@ namespace PlayerController
                 force -= _rb2d.velocity.y;
             
             _rb2d.AddForce(Vector2.up * force, ForceMode2D.Impulse);
+
+            InstantiateJumpDustVFX();
         }
 
         public void WallJump(int dir)
@@ -223,6 +227,8 @@ namespace PlayerController
                 force.y -= _rb2d.velocity.y;
             
             _rb2d.AddForce(force, ForceMode2D.Impulse);
+            
+            InstantiateJumpDustVFX();
         }
 
         public void ResetAdditionalJumps()
@@ -250,16 +256,6 @@ namespace PlayerController
             {
                 JumpRequest = false;
             }
-        }
-        #endregion
-        
-        #region Wall Sliding Functions
-        public bool CanWallSlide()
-        {
-            if ((LeftWallHit || RightWallHit) && MovementDirection != Vector2.zero)
-                return true;
-            
-            return false;
         }
         #endregion
         
@@ -319,9 +315,48 @@ namespace PlayerController
         {
             if (isMovingRight != IsFacingRight)
             {
-                // IsFacingRight = isMovingRight;
                 IsFacingRight = !IsFacingRight;
+                if (IsGrounded)
+                    InstantiateFlipDirectionVFX();
             }
+        }
+        #endregion
+        
+        #region VFX Methods
+        public void InstantiateJumpDustVFX()
+        {
+            Instantiate(_jumpDustVFXPrefab, _bottonVFXPoint.position, _jumpDustVFXPrefab.rotation);
+        }
+
+        public void InstantiateDashVFX()
+        {
+            Vector3 vfxScale = _dashVFXPrefab.localScale;
+            vfxScale.x = IsFacingRight ? 1 : -1;
+            _dashVFXPrefab.localScale = vfxScale;
+
+            Transform point = IsFacingRight ? _leftVFXPoint : _rightVFXPoint;
+
+            Instantiate(_dashVFXPrefab, point.position, _dashVFXPrefab.rotation);
+        }
+
+        public void InstantiateFlipDirectionVFX()
+        {
+            Vector3 vfxScale = _flipDirectionVFXPrefab.localScale;
+            vfxScale.x = IsFacingRight ? 1 : -1;
+            _flipDirectionVFXPrefab.localScale = vfxScale;
+            
+            Vector3 position = Vector3.zero;
+            position.y = _bottonVFXPoint.position.y;
+            position.x = IsFacingRight
+                ? _leftVFXPoint.position.x
+                : _rightVFXPoint.position.x;
+
+            Instantiate(_flipDirectionVFXPrefab, position, _flipDirectionVFXPrefab.rotation);
+        }
+
+        public void InstantiateFallDustVFX()
+        {
+            Instantiate(_fallDustVFXPrefab, _bottonVFXPoint.position, _fallDustVFXPrefab.rotation);
         }
         #endregion
         

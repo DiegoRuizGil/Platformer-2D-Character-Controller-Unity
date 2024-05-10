@@ -17,15 +17,11 @@ namespace PlayerController.States
             Context.SetGravityScale(Context.Data.gravityScale);
 
             Context.IsDashActive = true;
+            
+            Context.InstantiateFallDustVFX();
         }
 
-        public override void UpdateState()
-        {
-            if (Context.updateInPlayMode)
-            {
-                Context.SetGravityScale(Context.Data.gravityScale);
-            }
-        }
+        public override void UpdateState() { }
 
         public override void FixedUpdateState()
         {

@@ -16,13 +16,14 @@ namespace PlayerController.States
             
             Context.IsDashActive = false;
             Context.Sleep(Context.Data.dashSleepTime); // add small reaction time to the player
-
+            
             if (Context.MovementDirection.x != 0f)
                 _direction = Context.MovementDirection.x < 0 ? Vector2.left : Vector2.right;
             else
                 _direction = Context.IsFacingRight ? Vector2.right : Vector2.left;
             
             Context.SetDirectionToFace(_direction.x > 0);
+            Context.InstantiateDashVFX();
         }
 
         public override void UpdateState()
