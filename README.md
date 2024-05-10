@@ -1,8 +1,8 @@
 # Character Controller - Platformer 2D
 
-This Unity project offers a handy player controller made for 2D platformer games. It uses `Rigidbody2D` physics for smooth movement, mainly by applying forces for dynamic motion. It also integrates Unity's `New Input System`.
+This Unity project offers a handy player controller made for 2D platformer games, based on the YouTube tutorials by [`Dawnsour`](https://www.youtube.com/playlist?list=PLRsowSGWU4GiYNO6kgDMSb7cied6LWDnV). It uses `Rigidbody2D` physics for smooth movement, mainly by applying forces for dynamic motion. It also integrates Unity's `New Input System`.
 
-Based on the YouTube tutorials by [`Dawnsour`](https://www.youtube.com/playlist?list=PLRsowSGWU4GiYNO6kgDMSb7cied6LWDnV).
+You can try a demo from this [`itch.io`](https://diegorg64.itch.io/character-controller-platformer-2d) page.
 
 ## Table of contents
 - [Player States](#player-states)
