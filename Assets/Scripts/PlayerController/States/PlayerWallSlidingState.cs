@@ -25,6 +25,7 @@ namespace PlayerController.States
 
         public override void UpdateState()
         {
+            // check time pressing movement input
             if (Context.MovementDirection.x > 0 && _leftSide
                 || Context.MovementDirection.x < 0 && !_leftSide)
             {
@@ -40,6 +41,8 @@ namespace PlayerController.States
         {
             Context.Slide();
             
+            // if input has been pressed for long enough,
+            // allow the player to move horizontally
             if (_movingTimer <= 0)
                 Context.Run(_lerpAmount, _canAddBonusJumpApex);
         }

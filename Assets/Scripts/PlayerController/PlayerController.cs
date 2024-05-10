@@ -24,6 +24,8 @@ namespace PlayerController
         [SerializeField] private Transform _fallDustVFXPrefab;
         #endregion
         
+        public PlayerStates CurrentState => _currentState.StateKey;
+        
         #region Private variables
         private Rigidbody2D _rb2d;
         private RaycastInfo _raycastInfo;
@@ -31,8 +33,6 @@ namespace PlayerController
         private PlayerInputActions _playerInputActions;
         private InputAction _movementAction;
         #endregion
-
-        public PlayerStates CurrentState => _currentState.StateKey;
         
         #region Dash Parameters
         private float _lastPressedDashTime;
@@ -91,6 +91,7 @@ namespace PlayerController
         {
             base.Update();
             
+            // manage input buffers time
             ManageJumpBuffer();
             ManageDashBuffer();
             
@@ -112,6 +113,7 @@ namespace PlayerController
         #region State Machine Functions
         protected override void SetStates()
         {
+            // setting player states
             States.Add(PlayerStates.Grounded, new PlayerGroundedState(PlayerStates.Grounded, this));
             States.Add(PlayerStates.Jumping, new PlayerJumpingState(PlayerStates.Jumping, this));
             States.Add(PlayerStates.Falling, new PlayerFallingState(PlayerStates.Falling, this));
@@ -119,6 +121,7 @@ namespace PlayerController
             States.Add(PlayerStates.WallJumping, new PlayerWallJumpingState(PlayerStates.WallJumping, this));
             States.Add(PlayerStates.Dashing, new PlayerDashingState(PlayerStates.Dashing, this));
             
+            // set the player's initial state
             _currentState = States[PlayerStates.Grounded];
         }
         #endregion
@@ -152,6 +155,8 @@ namespace PlayerController
             // smooths change
             targetSpeed = Mathf.Lerp(_rb2d.velocity.x, targetSpeed, lerpAmount);
 
+            // Gets an acceleration value based on if we are accelerating (includes turning) 
+            // or trying to decelerate (stop). As well as applying a multiplier if we're air borne.
             float accelRate;
             if (IsGrounded)
             {
@@ -169,7 +174,7 @@ namespace PlayerController
             if (canAddBonusJumpApex && Mathf.Abs(_rb2d.velocity.y) < Data.jumpHangTimeThreshold)
             {
                 // makes the jump feels a bit more bouncy, responsive and natural
-                accelRate *= Data.jumpHangAcceleration;
+                accelRate *= Data.jumpHangAccelerationMult;
                 targetSpeed *= Data.jumpHangMaxSpeedMult;
             }
             
@@ -215,10 +220,11 @@ namespace PlayerController
             InstantiateJumpDustVFX();
         }
 
+        /// <param name="dir">opposite direction of wall</param>
         public void WallJump(int dir)
         {
             Vector2 force = Data.wallJumpForce;
-            force.x *= dir;
+            force.x *= dir; //apply force in opposite direction of wall
 
             if (Mathf.Sign(_rb2d.velocity.x) != Mathf.Sign(force.x))
                 force.x -= _rb2d.velocity.x;
@@ -241,9 +247,10 @@ namespace PlayerController
             if (context.ReadValueAsButton())
             {
                 JumpRequest = true;
-                _lastPressedJumpTime = Data.jumpInputBufferTime;
+                _lastPressedJumpTime = Data.jumpInputBufferTime; // reset buffer time
             }
             
+            // if still pressing jump button, perform long jump
             HandleLongJumps = context.ReadValueAsButton();
         }
 
@@ -277,7 +284,7 @@ namespace PlayerController
             if (context.ReadValueAsButton())
             {
                 DashRequest = true;
-                _lastPressedDashTime = Data.dashInputBufferTime;
+                _lastPressedDashTime = Data.dashInputBufferTime; // reset buffer time
             }
         }
 

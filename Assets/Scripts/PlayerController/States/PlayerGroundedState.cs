@@ -13,12 +13,14 @@ namespace PlayerController.States
 
         public override void EnterState()
         {
+            // reset additional jumps and dash
             Context.ResetAdditionalJumps();
-            Context.SetGravityScale(Context.Data.gravityScale);
-
             Context.IsDashActive = true;
             
-            Context.InstantiateFallDustVFX();
+            Context.SetGravityScale(Context.Data.gravityScale);
+            
+            if (!Context.JumpRequest)
+                Context.InstantiateFallDustVFX();
         }
 
         public override void UpdateState() { }
@@ -32,6 +34,7 @@ namespace PlayerController.States
 
         public override PlayerStates GetNextState()
         {
+            // set coyote time just when falling
             if (!Context.IsGrounded)
             {
                 Context.IsActiveCoyoteTime = true;

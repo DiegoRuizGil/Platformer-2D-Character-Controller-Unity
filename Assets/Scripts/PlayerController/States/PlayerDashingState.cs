@@ -17,6 +17,7 @@ namespace PlayerController.States
             Context.IsDashActive = false;
             Context.Sleep(Context.Data.dashSleepTime); // add small reaction time to the player
             
+            // set dash direction
             if (Context.MovementDirection.x != 0f)
                 _direction = Context.MovementDirection.x < 0 ? Vector2.left : Vector2.right;
             else

@@ -5,7 +5,7 @@ namespace StateMachine
     public abstract class BaseState<EState> where EState : Enum
     { 
         public EState StateKey { get; private set; }
-        public String Name => StateKey.ToString();
+        public string Name => StateKey.ToString();
         
         public BaseState(EState key)
         {
