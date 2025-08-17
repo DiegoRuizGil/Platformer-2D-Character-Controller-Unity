@@ -70,7 +70,7 @@ namespace Character_Controller.Runtime.Controller
             _rb2d.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();
 
-            DashModule = new DashModule(Data.dashInputBufferTime);
+            DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
         }
 
         protected override void Start()
@@ -258,21 +258,6 @@ namespace Character_Controller.Runtime.Controller
                 JumpRequest = false;
             }
         }
-        #endregion
-        
-        #region Dash Functions
-        public void RefillDash()
-        {
-            StartCoroutine(nameof(PerformRefillDash));
-        }
-        
-        private IEnumerator PerformRefillDash()
-        {
-            DashModule.IsRefilling = true;
-            yield return new WaitForSeconds(Data.dashRefillTime);
-            DashModule.IsRefilling = false;
-        }
-
         #endregion
         
         #region General Methods

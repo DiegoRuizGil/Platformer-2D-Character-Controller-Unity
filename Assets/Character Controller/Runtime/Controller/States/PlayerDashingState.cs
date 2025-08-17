@@ -37,7 +37,7 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void ExitState()
         {
-            Context.RefillDash();
+            _ = Context.DashModule.Refill();
         }
 
         public override PlayerStates GetNextState()

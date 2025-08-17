@@ -1,19 +1,25 @@
-﻿using UnityEngine.InputSystem;
+﻿using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Character_Controller.Runtime.Controller.Domain
 {
     public class DashModule
     {
-        public Timer InputBuffer { get; private set; }
-        public bool IsRefilling;
         public bool IsActive;
         public bool Request;
 
-        public bool CanDash => IsActive && !IsRefilling;
+        private readonly Timer _inputBuffer;
+        private readonly Timer _refillTimer;
+        
+        private bool _isRefilling;
+        
+        public bool CanDash => IsActive && !_isRefilling;
 
-        public DashModule(float inputBufferDuration)
+        public DashModule(float inputBufferDuration, float refillDuration)
         {
-            InputBuffer = new Timer(inputBufferDuration);
+            _inputBuffer = new Timer(inputBufferDuration);
+            _refillTimer = new Timer(refillDuration);
         }
 
         public void OnInput(InputAction.CallbackContext context)
@@ -21,7 +27,7 @@ namespace Character_Controller.Runtime.Controller.Domain
             if (context.ReadValueAsButton())
             {
                 Request = true;
-                InputBuffer.Reset();
+                _inputBuffer.Reset();
             }
         }
         
@@ -29,9 +35,21 @@ namespace Character_Controller.Runtime.Controller.Domain
         {
             if (!Request) return;
             
-            InputBuffer.Tick(delta);
-            if (InputBuffer.Finished)
+            _inputBuffer.Tick(delta);
+            if (_inputBuffer.Finished)
                 Request = false;
+        }
+
+        public async Task Refill()
+        {
+            _isRefilling = true;
+            while (!_refillTimer.Finished)
+            {
+                _refillTimer.Tick(Time.deltaTime);
+                await Task.Yield();
+            }
+            _refillTimer.Reset();
+            _isRefilling = false;
         }
     }
 }
