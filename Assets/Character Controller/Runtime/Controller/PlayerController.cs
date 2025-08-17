@@ -34,7 +34,7 @@ namespace Character_Controller.Runtime.Controller
         private InputAction _movementAction;
         #endregion
 
-        public readonly DashModule DashModule = new DashModule();
+        public DashModule DashModule;
         
         #region Movement Parameters
         public Vector2 MovementDirection => _movementAction.ReadValue<Vector2>();
@@ -69,6 +69,8 @@ namespace Character_Controller.Runtime.Controller
             _rb2d = GetComponent<Rigidbody2D>();
             _rb2d.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();
+
+            DashModule = new DashModule(Data.dashInputBufferTime);
         }
 
         protected override void Start()
@@ -276,7 +278,7 @@ namespace Character_Controller.Runtime.Controller
             if (context.ReadValueAsButton())
             {
                 DashModule.Request = true;
-                DashModule.ResetBuffer(Data.dashInputBufferTime);
+                DashModule.InputBuffer.Reset();
             }
         }
 
@@ -284,8 +286,8 @@ namespace Character_Controller.Runtime.Controller
         {
             if (!DashModule.Request) return;
             
-            DashModule.TickBuffer(Time.deltaTime);
-            if (DashModule.LastPressedBuffer <= 0)
+            DashModule.InputBuffer.Tick(Time.deltaTime);
+            if (DashModule.InputBuffer.Finished)
             {
                 DashModule.Request = false;
             }

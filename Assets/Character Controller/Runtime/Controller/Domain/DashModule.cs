@@ -2,14 +2,16 @@
 {
     public class DashModule
     {
-        public float LastPressedBuffer { get; private set; }
+        public Timer InputBuffer { get; private set; }
         public bool IsRefilling;
         public bool IsActive;
         public bool Request;
         
         public bool CanDash => IsActive && !IsRefilling;
 
-        public void TickBuffer(float delta) => LastPressedBuffer -= delta;
-        public void ResetBuffer(float duration) => LastPressedBuffer = duration;
+        public DashModule(float inputBufferDuration)
+        {
+            InputBuffer = new Timer(inputBufferDuration);
+        }
     }
 }
