@@ -31,7 +31,6 @@ namespace Character_Controller.Runtime.Controller
         private Rigidbody2D _rb2d;
         private RaycastInfo _raycastInfo;
         
-        private PlayerInputActions _playerInputActions;
         private InputAction _movementAction;
         #endregion
 
@@ -70,8 +69,6 @@ namespace Character_Controller.Runtime.Controller
             _rb2d = GetComponent<Rigidbody2D>();
             _rb2d.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();
-
-            _playerInputActions = new PlayerInputActions();
         }
 
         protected override void Start()
@@ -124,22 +121,22 @@ namespace Character_Controller.Runtime.Controller
         #region Input
         private void EnableInput()
         {
-            _movementAction = _playerInputActions.Player.Movement;
+            _movementAction = InputManager.PlayerActions.Movement;
             _movementAction.Enable();
 
-            _playerInputActions.Player.Jump.started += OnJumpAction;
-            _playerInputActions.Player.Jump.canceled += OnJumpAction;
-            _playerInputActions.Player.Jump.Enable();
+            InputManager.PlayerActions.Jump.started += OnJumpAction;
+            InputManager.PlayerActions.Jump.canceled += OnJumpAction;
+            InputManager.PlayerActions.Jump.Enable();
 
-            _playerInputActions.Player.Dash.performed += OnDashAction;
-            _playerInputActions.Player.Dash.Enable();
+            InputManager.PlayerActions.Dash.performed += OnDashAction;
+            InputManager.PlayerActions.Dash.Enable();
         }
 
         private void DisableInput()
         {
             _movementAction.Disable();
-            _playerInputActions.Player.Jump.Disable();
-            _playerInputActions.Player.Dash.Disable();
+            InputManager.PlayerActions.Jump.Disable();
+            InputManager.PlayerActions.Dash.Disable();
         }
         #endregion
         
