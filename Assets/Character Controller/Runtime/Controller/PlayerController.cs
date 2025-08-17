@@ -34,7 +34,7 @@ namespace Character_Controller.Runtime.Controller
         private InputAction _movementAction;
         #endregion
 
-        public DashParams DashParams;
+        public readonly DashModule DashModule = new DashModule();
         
         #region Movement Parameters
         public Vector2 MovementDirection => _movementAction.ReadValue<Vector2>();
@@ -266,28 +266,28 @@ namespace Character_Controller.Runtime.Controller
         
         private IEnumerator PerformRefillDash()
         {
-            DashParams.IsRefilling = true;
+            DashModule.IsRefilling = true;
             yield return new WaitForSeconds(Data.dashRefillTime);
-            DashParams.IsRefilling = false;
+            DashModule.IsRefilling = false;
         }
         
         private void OnDashAction(InputAction.CallbackContext context)
         {
             if (context.ReadValueAsButton())
             {
-                DashParams.Request = true;
-                DashParams.ResetBuffer(Data.dashInputBufferTime);
+                DashModule.Request = true;
+                DashModule.ResetBuffer(Data.dashInputBufferTime);
             }
         }
 
         private void ManageDashBuffer()
         {
-            if (!DashParams.Request) return;
+            if (!DashModule.Request) return;
             
-            DashParams.TickBuffer(Time.deltaTime);
-            if (DashParams.LastPressedBuffer <= 0)
+            DashModule.TickBuffer(Time.deltaTime);
+            if (DashModule.LastPressedBuffer <= 0)
             {
-                DashParams.Request = false;
+                DashModule.Request = false;
             }
         }
         #endregion

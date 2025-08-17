@@ -34,7 +34,7 @@ namespace Character_Controller.Runtime.Controller
         {
             FlipSprite();
             
-            if (_player.DashParams.CanDash && _player.DashParams.Request)
+            if (_player.DashModule.CanDash && _player.DashModule.Request)
                 _animator.SetTrigger(_isDashingHash);
         }
 

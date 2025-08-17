@@ -1,6 +1,6 @@
 ﻿namespace Character_Controller.Runtime.Controller.Domain
 {
-    public struct DashParams
+    public class DashModule
     {
         public float LastPressedBuffer { get; private set; }
         public bool IsRefilling;
