@@ -1,7 +1,7 @@
 using Character_Controller.Runtime.CustomAttributes;
 using UnityEngine;
 
-namespace Character_Controller.Runtime.PlayerController
+namespace Character_Controller.Runtime.Controller
 {
     [CreateAssetMenu(fileName = "New Player Movement Data", menuName = "Player Movement Data")]
     public class PlayerMovementData : ScriptableObject
