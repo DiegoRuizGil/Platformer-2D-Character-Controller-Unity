@@ -24,5 +24,14 @@ namespace Character_Controller.Runtime.Controller.Domain
                 InputBuffer.Reset();
             }
         }
+        
+        public void HandleInputBuffer(float delta)
+        {
+            if (!Request) return;
+            
+            InputBuffer.Tick(delta);
+            if (InputBuffer.Finished)
+                Request = false;
+        }
     }
 }

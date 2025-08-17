@@ -87,7 +87,7 @@ namespace Character_Controller.Runtime.Controller
             
             // manage input buffers time
             ManageJumpBuffer();
-            ManageDashBuffer();
+            DashModule.HandleInputBuffer(Time.deltaTime);
             
             if (MovementDirection.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
                 SetDirectionToFace(MovementDirection.x > 0);
@@ -273,16 +273,6 @@ namespace Character_Controller.Runtime.Controller
             DashModule.IsRefilling = false;
         }
 
-        private void ManageDashBuffer()
-        {
-            if (!DashModule.Request) return;
-            
-            DashModule.InputBuffer.Tick(Time.deltaTime);
-            if (DashModule.InputBuffer.Finished)
-            {
-                DashModule.Request = false;
-            }
-        }
         #endregion
         
         #region General Methods
