@@ -16,5 +16,11 @@ namespace Character_Controller.Runtime.Controller.Domain
             _inputAction = inputAction;
             IsFacingRight = true;
         }
+
+        public void SetDirectionToFace(bool isMovingRight)
+        {
+            if (isMovingRight != IsFacingRight)
+                IsFacingRight = !IsFacingRight;
+        }
     }
 }

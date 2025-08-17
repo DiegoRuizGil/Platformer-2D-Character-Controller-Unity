@@ -275,9 +275,9 @@ namespace Character_Controller.Runtime.Controller
         
         public void SetDirectionToFace(bool isMovingRight)
         {
+            MovementModule.SetDirectionToFace(isMovingRight);
             if (isMovingRight != MovementModule.IsFacingRight)
             {
-                MovementModule.IsFacingRight = !MovementModule.IsFacingRight;
                 if (IsGrounded)
                     InstantiateFlipDirectionVFX();
             }
