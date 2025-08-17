@@ -18,7 +18,7 @@ You can try a demo from this [`itch.io`](https://diegorg64.itch.io/character-con
 ## Player States
 The player movement is managed using a state machine. This state-based approach allows a better control and coordination of movement actions. Each state encapsulate specific logic and transitions between states.
 
-![Player States](Images/PlayerStates.png)
+![Player States](Assets/Docs~/PlayerStates.png)
 
 
 ## Movement Parameters
