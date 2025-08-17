@@ -18,10 +18,10 @@ namespace Character_Controller.Runtime.Controller.States
             Context.Sleep(Context.Data.dashSleepTime); // add small reaction time to the player
             
             // set dash direction
-            if (Context.MovementDirection.x != 0f)
-                _direction = Context.MovementDirection.x < 0 ? Vector2.left : Vector2.right;
+            if (Context.MovementModule.Direction.x != 0f)
+                _direction = Context.MovementModule.Direction.x < 0 ? Vector2.left : Vector2.right;
             else
-                _direction = Context.IsFacingRight ? Vector2.right : Vector2.left;
+                _direction = Context.MovementModule.IsFacingRight ? Vector2.right : Vector2.left;
             
             Context.SetDirectionToFace(_direction.x > 0);
             Context.InstantiateDashVFX();

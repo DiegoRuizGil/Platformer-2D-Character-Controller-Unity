@@ -31,7 +31,7 @@ namespace Character_Controller.Runtime.Controller.States
             }
             
             float gravityScale = Context.Data.gravityScale;
-            if (Context.MovementDirection.y < 0) // higher gravity if holding down
+            if (Context.MovementModule.Direction.y < 0) // higher gravity if holding down
                 gravityScale *= Context.Data.fastFallGravityMult;
             else
                 gravityScale *= Context.Data.fallGravityMult;
@@ -44,7 +44,7 @@ namespace Character_Controller.Runtime.Controller.States
             // limit vertical velocity
             float terminalVelocity = -Context.Data.maxFallSpeed;
             // higher fall velocity if holding down
-            if (Context.MovementDirection.y < 0)
+            if (Context.MovementModule.Direction.y < 0)
                 terminalVelocity = -Context.Data.maxFastFallSpeed;
             
             Context.Velocity = new Vector2(
@@ -77,7 +77,7 @@ namespace Character_Controller.Runtime.Controller.States
             }
 
             if ((Context.LeftWallHit || Context.RightWallHit)
-                && Context.MovementDirection != Vector2.zero)
+                && Context.MovementModule.Direction != Vector2.zero)
                 return PlayerStates.WallSliding;
             
             if (Context.DashModule.Request && Context.DashModule.CanDash)

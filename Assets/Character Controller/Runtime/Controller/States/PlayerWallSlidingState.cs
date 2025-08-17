@@ -26,8 +26,8 @@ namespace Character_Controller.Runtime.Controller.States
         public override void UpdateState()
         {
             // check time pressing movement input
-            if (Context.MovementDirection.x > 0 && _leftSide
-                || Context.MovementDirection.x < 0 && !_leftSide)
+            if (Context.MovementModule.Direction.x > 0 && _leftSide
+                || Context.MovementModule.Direction.x < 0 && !_leftSide)
             {
                 _movingTimer -= Time.deltaTime;
             }

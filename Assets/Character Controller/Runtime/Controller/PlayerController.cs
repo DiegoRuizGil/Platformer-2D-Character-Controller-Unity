@@ -26,18 +26,16 @@ namespace Character_Controller.Runtime.Controller
         #endregion
         
         public PlayerStates CurrentState => _currentState.StateKey;
-        
+        public DashModule DashModule;
+        public MovementModule MovementModule;
+
         #region Private variables
         private Rigidbody2D _rb2d;
         private RaycastInfo _raycastInfo;
-        
-        private InputAction _movementAction;
+
         #endregion
 
-        public DashModule DashModule;
-        
         #region Movement Parameters
-        public Vector2 MovementDirection => _movementAction.ReadValue<Vector2>();
         public bool LeftWallHit => _raycastInfo.HitInfo.Left;
         public bool RightWallHit => _raycastInfo.HitInfo.Right;
         public Vector2 Velocity
@@ -45,7 +43,6 @@ namespace Character_Controller.Runtime.Controller
             get => _rb2d.velocity;
             set => _rb2d.velocity = value;
         }
-        public bool IsFacingRight { get; private set; }
         #endregion
         
         #region Jump Parameters
@@ -71,14 +68,13 @@ namespace Character_Controller.Runtime.Controller
             _raycastInfo = GetComponent<RaycastInfo>();
 
             DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
+            MovementModule = new MovementModule(InputManager.PlayerActions.Movement);
         }
 
         protected override void Start()
         {
             base.Start();
             SetGravityScale(Data.gravityScale);
-
-            IsFacingRight = true;
         }
 
         protected override void Update()
@@ -89,8 +85,8 @@ namespace Character_Controller.Runtime.Controller
             ManageJumpBuffer();
             DashModule.HandleInputBuffer(Time.deltaTime);
             
-            if (MovementDirection.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
-                SetDirectionToFace(MovementDirection.x > 0);
+            if (MovementModule.Direction.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
+                SetDirectionToFace(MovementModule.Direction.x > 0);
         }
 
         private void OnEnable()
@@ -123,8 +119,7 @@ namespace Character_Controller.Runtime.Controller
         #region Input
         private void EnableInput()
         {
-            _movementAction = InputManager.PlayerActions.Movement;
-            _movementAction.Enable();
+            InputManager.PlayerActions.Movement.Enable();
 
             InputManager.PlayerActions.Jump.started += OnJumpAction;
             InputManager.PlayerActions.Jump.canceled += OnJumpAction;
@@ -136,7 +131,7 @@ namespace Character_Controller.Runtime.Controller
 
         private void DisableInput()
         {
-            _movementAction.Disable();
+            InputManager.PlayerActions.Movement.Disable();
             InputManager.PlayerActions.Jump.Disable();
             InputManager.PlayerActions.Dash.Disable();
         }
@@ -145,7 +140,7 @@ namespace Character_Controller.Runtime.Controller
         #region Movement Functions
         public void Run(float lerpAmount, bool canAddBonusJumpApex)
         {
-            float targetSpeed = MovementDirection.x * Data.runMaxSpeed;
+            float targetSpeed = MovementModule.Direction.x * Data.runMaxSpeed;
             // smooths change
             targetSpeed = Mathf.Lerp(_rb2d.velocity.x, targetSpeed, lerpAmount);
 
@@ -280,9 +275,9 @@ namespace Character_Controller.Runtime.Controller
         
         public void SetDirectionToFace(bool isMovingRight)
         {
-            if (isMovingRight != IsFacingRight)
+            if (isMovingRight != MovementModule.IsFacingRight)
             {
-                IsFacingRight = !IsFacingRight;
+                MovementModule.IsFacingRight = !MovementModule.IsFacingRight;
                 if (IsGrounded)
                     InstantiateFlipDirectionVFX();
             }
@@ -298,10 +293,10 @@ namespace Character_Controller.Runtime.Controller
         public void InstantiateDashVFX()
         {
             Vector3 vfxScale = _dashVFXPrefab.localScale;
-            vfxScale.x = IsFacingRight ? 1 : -1;
+            vfxScale.x = MovementModule.IsFacingRight ? 1 : -1;
             _dashVFXPrefab.localScale = vfxScale;
 
-            Transform point = IsFacingRight ? _leftVFXPoint : _rightVFXPoint;
+            Transform point = MovementModule.IsFacingRight ? _leftVFXPoint : _rightVFXPoint;
 
             Instantiate(_dashVFXPrefab, point.position, _dashVFXPrefab.rotation);
         }
@@ -309,12 +304,12 @@ namespace Character_Controller.Runtime.Controller
         public void InstantiateFlipDirectionVFX()
         {
             Vector3 vfxScale = _flipDirectionVFXPrefab.localScale;
-            vfxScale.x = IsFacingRight ? 1 : -1;
+            vfxScale.x = MovementModule.IsFacingRight ? 1 : -1;
             _flipDirectionVFXPrefab.localScale = vfxScale;
             
             Vector3 position = Vector3.zero;
             position.y = _bottonVFXPoint.position.y;
-            position.x = IsFacingRight
+            position.x = MovementModule.IsFacingRight
                 ? _leftVFXPoint.position.x
                 : _rightVFXPoint.position.x;
 
@@ -337,7 +332,7 @@ namespace Character_Controller.Runtime.Controller
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"<color=black><size=20>Input: {MovementDirection}</size></color>");
+            GUILayout.Label($"<color=black><size=20>Input: {MovementModule.Direction}</size></color>");
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
