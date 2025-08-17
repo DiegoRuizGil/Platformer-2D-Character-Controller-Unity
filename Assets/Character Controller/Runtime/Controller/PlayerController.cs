@@ -130,7 +130,7 @@ namespace Character_Controller.Runtime.Controller
             InputManager.PlayerActions.Jump.canceled += OnJumpAction;
             InputManager.PlayerActions.Jump.Enable();
 
-            InputManager.PlayerActions.Dash.performed += OnDashAction;
+            InputManager.PlayerActions.Dash.performed += DashModule.OnInput;
             InputManager.PlayerActions.Dash.Enable();
         }
 
@@ -271,15 +271,6 @@ namespace Character_Controller.Runtime.Controller
             DashModule.IsRefilling = true;
             yield return new WaitForSeconds(Data.dashRefillTime);
             DashModule.IsRefilling = false;
-        }
-        
-        private void OnDashAction(InputAction.CallbackContext context)
-        {
-            if (context.ReadValueAsButton())
-            {
-                DashModule.Request = true;
-                DashModule.InputBuffer.Reset();
-            }
         }
 
         private void ManageDashBuffer()
