@@ -279,7 +279,7 @@ namespace Character_Controller.Runtime.Controller
             if (context.ReadValueAsButton())
             {
                 DashParams.Request = true;
-                DashParams.LastPressedTime = Data.dashInputBufferTime; // reset buffer time
+                DashParams.ResetBuffer(Data.dashInputBufferTime);
             }
         }
 
@@ -287,8 +287,8 @@ namespace Character_Controller.Runtime.Controller
         {
             if (!DashParams.Request) return;
             
-            DashParams.LastPressedTime -= Time.deltaTime;
-            if (DashParams.LastPressedTime <= 0)
+            DashParams.TickBuffer(Time.deltaTime);
+            if (DashParams.LastPressedBuffer <= 0)
             {
                 DashParams.Request = false;
             }
