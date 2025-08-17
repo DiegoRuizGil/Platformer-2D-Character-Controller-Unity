@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StateMachine
+namespace Character_Controller.Runtime.StateMachine
 {
     public abstract class BaseState<EState> where EState : Enum
     { 

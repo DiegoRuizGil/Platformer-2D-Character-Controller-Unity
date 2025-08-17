@@ -1,6 +1,6 @@
-using StateMachine;
+using Character_Controller.Runtime.StateMachine;
 
-namespace PlayerController.States
+namespace Character_Controller.Runtime.PlayerController.States
 {
     public enum PlayerStates
     {

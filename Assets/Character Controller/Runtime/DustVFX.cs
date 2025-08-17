@@ -1,10 +1,13 @@
 using UnityEngine;
 
-public class DustVFX : MonoBehaviour
+namespace Character_Controller.Runtime
 {
-    // called at the end of the animation
-    public void DestroyObject()
+    public class DustVFX : MonoBehaviour
     {
-        Destroy(gameObject);
+        // called at the end of the animation
+        public void DestroyObject()
+        {
+            Destroy(gameObject);
+        }
     }
 }

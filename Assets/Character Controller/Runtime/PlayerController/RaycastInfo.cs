@@ -1,6 +1,7 @@
+using Character_Controller.Runtime.CustomAttributes;
 using UnityEngine;
 
-namespace PlayerController
+namespace Character_Controller.Runtime.PlayerController
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class RaycastInfo : MonoBehaviour

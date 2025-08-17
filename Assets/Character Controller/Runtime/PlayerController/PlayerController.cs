@@ -1,10 +1,10 @@
 using System.Collections;
-using PlayerController.States;
-using StateMachine;
+using Character_Controller.Runtime.PlayerController.States;
+using Character_Controller.Runtime.StateMachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace PlayerController
+namespace Character_Controller.Runtime.PlayerController
 {
     [RequireComponent(typeof(Rigidbody2D), typeof(RaycastInfo))]
     public class PlayerController : BaseStateMachine<PlayerStates>

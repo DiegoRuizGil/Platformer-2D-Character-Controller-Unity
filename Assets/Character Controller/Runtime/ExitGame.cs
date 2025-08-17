@@ -1,18 +1,21 @@
 using UnityEngine;
 
-public class ExitGame : MonoBehaviour
+namespace Character_Controller.Runtime
 {
-    private void Awake()
+    public class ExitGame : MonoBehaviour
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        private void Awake()
         {
-            Application.Quit();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
         }
     }
 }

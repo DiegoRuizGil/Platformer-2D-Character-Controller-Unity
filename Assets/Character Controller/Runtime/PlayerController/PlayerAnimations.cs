@@ -1,7 +1,7 @@
-using PlayerController.States;
+using Character_Controller.Runtime.PlayerController.States;
 using UnityEngine;
 
-namespace PlayerController
+namespace Character_Controller.Runtime.PlayerController
 {
     public class PlayerAnimations : MonoBehaviour
     {

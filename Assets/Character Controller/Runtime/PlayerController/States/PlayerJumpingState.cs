@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PlayerController.States
+namespace Character_Controller.Runtime.PlayerController.States
 {
     public class PlayerJumpingState : PlayerBaseState
     {

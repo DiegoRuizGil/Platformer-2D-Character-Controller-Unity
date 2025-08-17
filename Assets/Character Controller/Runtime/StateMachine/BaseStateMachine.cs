@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StateMachine
+namespace Character_Controller.Runtime.StateMachine
 {
     public abstract class BaseStateMachine<EState> : MonoBehaviour where EState : Enum
     {
