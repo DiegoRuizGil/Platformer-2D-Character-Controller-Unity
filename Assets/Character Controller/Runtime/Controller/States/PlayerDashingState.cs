@@ -14,7 +14,7 @@ namespace Character_Controller.Runtime.Controller.States
         {
             _timeInState = 0f;
             
-            Context.IsDashActive = false;
+            Context.DashParams.IsActive = false;
             Context.Sleep(Context.Data.dashSleepTime); // add small reaction time to the player
             
             // set dash direction

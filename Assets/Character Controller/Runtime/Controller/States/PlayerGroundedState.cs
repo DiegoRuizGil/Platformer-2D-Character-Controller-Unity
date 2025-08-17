@@ -13,7 +13,7 @@ namespace Character_Controller.Runtime.Controller.States
         {
             // reset additional jumps and dash
             Context.ResetAdditionalJumps();
-            Context.IsDashActive = true;
+            Context.DashParams.IsActive = true;
             
             Context.SetGravityScale(Context.Data.gravityScale);
             
@@ -45,7 +45,7 @@ namespace Character_Controller.Runtime.Controller.States
                 return PlayerStates.Jumping;
             }
 
-            if (Context.DashRequest && Context.CanDash)
+            if (Context.DashParams.Request && Context.DashParams.CanDash)
                 return PlayerStates.Dashing;
             
             return StateKey;

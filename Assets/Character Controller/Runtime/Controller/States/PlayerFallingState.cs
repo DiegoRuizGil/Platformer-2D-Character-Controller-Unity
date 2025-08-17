@@ -80,7 +80,7 @@ namespace Character_Controller.Runtime.Controller.States
                 && Context.MovementDirection != Vector2.zero)
                 return PlayerStates.WallSliding;
             
-            if (Context.DashRequest && Context.CanDash)
+            if (Context.DashParams.Request && Context.DashParams.CanDash)
                 return PlayerStates.Dashing;
             
             return StateKey;

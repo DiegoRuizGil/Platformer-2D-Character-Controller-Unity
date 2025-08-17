@@ -1,4 +1,5 @@
 using System.Collections;
+using Character_Controller.Runtime.Controller.Domain;
 using Character_Controller.Runtime.Controller.States;
 using Character_Controller.Runtime.StateMachine;
 using UnityEngine;
@@ -33,14 +34,8 @@ namespace Character_Controller.Runtime.Controller
         private PlayerInputActions _playerInputActions;
         private InputAction _movementAction;
         #endregion
-        
-        #region Dash Parameters
-        private float _lastPressedDashTime;
-        private bool _isDashRefilling;
-        public bool IsDashActive { get; set; } // set to true when grounded, and false when dashing
-        public bool CanDash => IsDashActive && !_isDashRefilling;
-        public bool DashRequest { get; private set; }
-        #endregion
+
+        public DashParams DashParams;
         
         #region Movement Parameters
         public Vector2 MovementDirection => _movementAction.ReadValue<Vector2>();
@@ -274,28 +269,28 @@ namespace Character_Controller.Runtime.Controller
         
         private IEnumerator PerformRefillDash()
         {
-            _isDashRefilling = true;
+            DashParams.IsRefilling = true;
             yield return new WaitForSeconds(Data.dashRefillTime);
-            _isDashRefilling = false;
+            DashParams.IsRefilling = false;
         }
         
         private void OnDashAction(InputAction.CallbackContext context)
         {
             if (context.ReadValueAsButton())
             {
-                DashRequest = true;
-                _lastPressedDashTime = Data.dashInputBufferTime; // reset buffer time
+                DashParams.Request = true;
+                DashParams.LastPressedTime = Data.dashInputBufferTime; // reset buffer time
             }
         }
 
         private void ManageDashBuffer()
         {
-            if (!DashRequest) return;
+            if (!DashParams.Request) return;
             
-            _lastPressedDashTime -= Time.deltaTime;
-            if (_lastPressedDashTime <= 0)
+            DashParams.LastPressedTime -= Time.deltaTime;
+            if (DashParams.LastPressedTime <= 0)
             {
-                DashRequest = false;
+                DashParams.Request = false;
             }
         }
         #endregion
