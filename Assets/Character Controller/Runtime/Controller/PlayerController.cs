@@ -136,23 +136,6 @@ namespace Character_Controller.Runtime.Controller
             InputManager.PlayerActions.Dash.Disable();
         }
         #endregion
-        
-        #region Movement Functions
-        public void Slide()
-        {
-            // remove the remaining upwards impulse
-            if (_rb2d.velocity.y > 0)
-                _rb2d.AddForce(-_rb2d.velocity.y * Vector2.up, ForceMode2D.Impulse);
-
-            float speedDif = Data.slideSpeed - _rb2d.velocity.y;
-            float movement = speedDif * Data.slideAccel;
-            
-            //The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigidbodies.
-            movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif)  * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
-            
-            _rb2d.AddForce(movement * Vector2.up);
-        }
-        #endregion
 
         #region Jump Functions
         public void Jump()

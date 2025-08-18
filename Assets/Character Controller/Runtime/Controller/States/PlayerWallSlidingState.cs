@@ -39,7 +39,7 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void FixedUpdateState()
         {
-            Context.Slide();
+            Context.MovementModule.Slide(Context.Data.slideSpeed, Context.Data.slideAccel);
             
             // if input has been pressed for long enough,
             // allow the player to move horizontally
