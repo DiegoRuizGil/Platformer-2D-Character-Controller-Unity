@@ -68,13 +68,13 @@ namespace Character_Controller.Runtime.Controller
             _raycastInfo = GetComponent<RaycastInfo>();
 
             DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
-            MovementModule = new MovementModule(InputManager.PlayerActions.Movement);
+            MovementModule = new MovementModule(_rb2d, InputManager.PlayerActions.Movement);
         }
 
         protected override void Start()
         {
             base.Start();
-            SetGravityScale(Data.gravityScale);
+            MovementModule.SetGravityScale(Data.gravityScale);
         }
 
         protected override void Update()
@@ -138,45 +138,6 @@ namespace Character_Controller.Runtime.Controller
         #endregion
         
         #region Movement Functions
-        public void Run(float lerpAmount, bool canAddBonusJumpApex)
-        {
-            float targetSpeed = MovementModule.Direction.x * Data.runMaxSpeed;
-            // smooths change
-            targetSpeed = Mathf.Lerp(_rb2d.velocity.x, targetSpeed, lerpAmount);
-
-            // Gets an acceleration value based on if we are accelerating (includes turning) 
-            // or trying to decelerate (stop). As well as applying a multiplier if we're air borne.
-            float accelRate;
-            if (IsGrounded)
-            {
-                accelRate = Mathf.Abs(targetSpeed) > 0.01f
-                    ? Data.runAccelAmount
-                    : Data.runDecelAmount;
-            }
-            else
-            {
-                accelRate = Mathf.Abs(targetSpeed) > 0.01f
-                    ? Data.runAccelAmount * Data.accelInAirMult
-                    : Data.runDecelAmount * Data.decelInAirMult;
-            }
-            
-            if (canAddBonusJumpApex && Mathf.Abs(_rb2d.velocity.y) < Data.jumpHangTimeThreshold)
-            {
-                // makes the jump feels a bit more bouncy, responsive and natural
-                accelRate *= Data.jumpHangAccelerationMult;
-                targetSpeed *= Data.jumpHangMaxSpeedMult;
-            }
-            
-            float speedDif = targetSpeed - _rb2d.velocity.x;
-            float movement = speedDif * accelRate;
-            
-            _rb2d.AddForce(movement * Vector2.right, ForceMode2D.Force);
-            // same as:
-            // _rb2d.velocity = new Vector2(
-            //      _rb2d.velocity.x + (Time.fixedDeltaTime * speedDif * accelRate) / _rb2d.mass,
-            //      _rb2d.velocity.y);
-        }
-
         public void Slide()
         {
             // remove the remaining upwards impulse
@@ -256,11 +217,6 @@ namespace Character_Controller.Runtime.Controller
         #endregion
         
         #region General Methods
-        public void SetGravityScale(float scale)
-        {
-            _rb2d.gravityScale = scale;
-        }
-
         public void Sleep(float duration)
         {
             StartCoroutine(nameof(PerformSleep), duration);

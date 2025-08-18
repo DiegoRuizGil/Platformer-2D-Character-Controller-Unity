@@ -20,7 +20,7 @@ namespace Character_Controller.Runtime.Controller.States
             _leftSide = Context.LeftWallHit;
             
             Context.ResetAdditionalJumps();
-            Context.SetGravityScale(0);
+            Context.MovementModule.SetGravityScale(0);
         }
 
         public override void UpdateState()
@@ -44,7 +44,7 @@ namespace Character_Controller.Runtime.Controller.States
             // if input has been pressed for long enough,
             // allow the player to move horizontally
             if (_movingTimer <= 0)
-                Context.Run(_lerpAmount, _canAddBonusJumpApex);
+                Context.MovementModule.Move(Context.Data.runMaxSpeed, Context.Data.acceleration);
         }
 
         public override void ExitState() { }

@@ -27,6 +27,10 @@ namespace Character_Controller.Runtime.Controller
         [Header("RUN")]
         [Tooltip("Target speed we want the player to reach")]
         public float runMaxSpeed;
+
+        public float acceleration;
+        [Range(0f, 1f)] public float groundDecay;
+        [Range(0f, 1f)] public float airDecay;
         [Tooltip("The speed at which the player accelerates to max speed, can be set to runMaxSpeed to instant acceleration down to 0 for none at all")]
         public float runAcceleration;
         [Tooltip("The speed at which the player deceleration to max speed, can be set to runMaxSpeed to instant deceleration down to 0 for none at all")]

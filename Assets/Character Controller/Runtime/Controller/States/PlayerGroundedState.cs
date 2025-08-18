@@ -15,7 +15,7 @@ namespace Character_Controller.Runtime.Controller.States
             Context.ResetAdditionalJumps();
             Context.DashModule.IsActive = true;
             
-            Context.SetGravityScale(Context.Data.gravityScale);
+            Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
             
             if (!Context.JumpRequest)
                 Context.InstantiateFallDustVFX();
@@ -25,7 +25,9 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void FixedUpdateState()
         {
-            Context.Run(_lerpAmount, _canAddBonusJumpApex);
+            Context.MovementModule.Move(Context.Data.runMaxSpeed, Context.Data.acceleration);
+            if (Context.MovementModule.Direction.x == 0)
+                Context.MovementModule.ApplyFriction(Context.Data.groundDecay);
         }
 
         public override void ExitState() { }

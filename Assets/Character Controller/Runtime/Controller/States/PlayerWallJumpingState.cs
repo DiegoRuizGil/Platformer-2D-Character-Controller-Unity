@@ -31,12 +31,14 @@ namespace Character_Controller.Runtime.Controller.States
                 gravityScale *= Context.Data.jumpCutGravity;
             }
             
-            Context.SetGravityScale(gravityScale);
+            Context.MovementModule.SetGravityScale(gravityScale);
         }
 
         public override void FixedUpdateState()
         {
-            Context.Run(_lerpAmount, _canAddBonusJumpApex);
+            Context.MovementModule.Move(Context.Data.runMaxSpeed, Context.Data.acceleration);
+            if (Context.MovementModule.Direction.x == 0)
+                Context.MovementModule.ApplyHorizontalFriction(Context.Data.airDecay);
         }
 
         public override void ExitState() { }

@@ -36,22 +36,16 @@ namespace Character_Controller.Runtime.Controller.States
             else
                 gravityScale *= Context.Data.fallGravityMult;
                 
-            Context.SetGravityScale(gravityScale);
+            Context.MovementModule.SetGravityScale(gravityScale);
         }
 
         public override void FixedUpdateState()
         {
-            // limit vertical velocity
-            float terminalVelocity = -Context.Data.maxFallSpeed;
-            // higher fall velocity if holding down
-            if (Context.MovementModule.Direction.y < 0)
-                terminalVelocity = -Context.Data.maxFastFallSpeed;
-            
-            Context.Velocity = new Vector2(
-                Context.Velocity.x,
-                Mathf.Max(Context.Velocity.y, terminalVelocity));
-            
-            Context.Run(_lerpAmount, _canAddBonusJumpApex);
+            LimitVerticalVelocity();
+
+            Context.MovementModule.Move(Context.Data.runMaxSpeed, Context.Data.acceleration);
+            if (Context.MovementModule.Direction.x == 0)
+                Context.MovementModule.ApplyHorizontalFriction(Context.Data.airDecay);
         }
 
         public override void ExitState()
@@ -84,6 +78,18 @@ namespace Character_Controller.Runtime.Controller.States
                 return PlayerStates.Dashing;
             
             return StateKey;
+        }
+        
+        private void LimitVerticalVelocity()
+        {
+            float terminalVelocity = -Context.Data.maxFallSpeed;
+            // higher fall velocity if holding down
+            if (Context.MovementModule.Direction.y < 0)
+                terminalVelocity = -Context.Data.maxFastFallSpeed;
+            
+            Context.Velocity = new Vector2(
+                Context.Velocity.x,
+                Mathf.Max(Context.Velocity.y, terminalVelocity));
         }
     }
 }
