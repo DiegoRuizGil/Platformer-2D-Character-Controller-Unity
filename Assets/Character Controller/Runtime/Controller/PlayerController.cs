@@ -32,7 +32,6 @@ namespace Character_Controller.Runtime.Controller
         private Rigidbody2D _body;
         private RaycastInfo _raycastInfo;
 
-        #region Unity Functions
         private void Awake()
         {
             _body = GetComponent<Rigidbody2D>();
@@ -40,14 +39,8 @@ namespace Character_Controller.Runtime.Controller
             _raycastInfo = GetComponent<RaycastInfo>();
 
             DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
-            MovementModule = new MovementModule(_body, InputManager.PlayerActions.Movement);
-            JumpModule = new JumpModule(_body, Data.additionalJumps, Data.jumpInputBufferTime);
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            MovementModule.SetGravityScale(Data.gravityScale);
+            MovementModule = new MovementModule(_body, VFX);
+            JumpModule = new JumpModule(_body, VFX, Data.additionalJumps, Data.jumpInputBufferTime);
         }
 
         protected override void Update()
@@ -58,15 +51,12 @@ namespace Character_Controller.Runtime.Controller
             DashModule.HandleInputBuffer(Time.deltaTime);
             
             if (MovementModule.Direction.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
-                SetDirectionToFace(MovementModule.Direction.x > 0);
+                MovementModule.SetDirectionToFace(MovementModule.Direction.x > 0, IsGrounded);
         }
 
         private void OnEnable() => EnableInput();
         private void OnDisable() => DisableInput();
 
-        #endregion
-
-        #region State Machine Functions
         protected override void SetStates()
         {
             // setting player states
@@ -80,9 +70,7 @@ namespace Character_Controller.Runtime.Controller
             // set the player's initial state
             _currentState = States[PlayerStates.Grounded];
         }
-        #endregion
         
-        #region Input
         private void EnableInput()
         {
             InputManager.PlayerActions.Movement.Enable();
@@ -101,9 +89,7 @@ namespace Character_Controller.Runtime.Controller
             InputManager.PlayerActions.Jump.Disable();
             InputManager.PlayerActions.Dash.Disable();
         }
-        #endregion
         
-        #region General Methods
         public void Sleep(float duration)
         {
             StartCoroutine(nameof(PerformSleep), duration);
@@ -116,18 +102,6 @@ namespace Character_Controller.Runtime.Controller
             Time.timeScale = 1;
         }
         
-        public void SetDirectionToFace(bool isMovingRight)
-        {
-            MovementModule.SetDirectionToFace(isMovingRight);
-            if (isMovingRight != MovementModule.IsFacingRight)
-            {
-                if (IsGrounded)
-                    VFX.InstantiateFlipDirectionVFX(MovementModule.IsFacingRight);
-            }
-        }
-        #endregion
-        
-        #region Debug
         #if UNITY_EDITOR
         private void OnGUI()
         {
@@ -145,6 +119,5 @@ namespace Character_Controller.Runtime.Controller
             GUILayout.EndHorizontal();
         }
         #endif
-        #endregion
     }
 }

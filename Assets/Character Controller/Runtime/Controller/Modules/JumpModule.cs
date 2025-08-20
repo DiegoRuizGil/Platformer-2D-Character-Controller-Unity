@@ -16,14 +16,16 @@ namespace Character_Controller.Runtime.Controller.Modules
         }
 
         private readonly Rigidbody2D _body;
+        private readonly PlayerVFX _playerVFX;
 
         private int _additionalJumpsAvailable;
         private readonly int _additionalJumps;
         private readonly Timer _inputBuffer;
         
-        public JumpModule(Rigidbody2D body, int additionalJumps, float inputBufferDuration)
+        public JumpModule(Rigidbody2D body, PlayerVFX playerVFX, int additionalJumps, float inputBufferDuration)
         {
             _body = body;
+            _playerVFX = playerVFX;
             _additionalJumps = additionalJumps;
             _inputBuffer = new Timer(inputBufferDuration);
         }
@@ -53,12 +55,16 @@ namespace Character_Controller.Runtime.Controller.Modules
         {
             _body.velocity = new Vector2(_body.velocity.x, jumpForce);
             Request = false;
+            
+            _playerVFX.InstantiateJumpDustVFX();
         }
         
         public void WallJump(Vector2 jumpForce, int direction)
         {
             _body.velocity = new Vector2(jumpForce.x * direction, jumpForce.y);
             Request = false;
+            
+            _playerVFX.InstantiateJumpDustVFX();
         }
 
         public void ResetAdditionalJumps() => _additionalJumpsAvailable = _additionalJumps;

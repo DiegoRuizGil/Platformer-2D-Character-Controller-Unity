@@ -23,7 +23,7 @@ namespace Character_Controller.Runtime.Controller.States
             else
                 _direction = Context.MovementModule.IsFacingRight ? Vector2.right : Vector2.left;
             
-            Context.SetDirectionToFace(_direction.x > 0);
+            Context.MovementModule.SetDirectionToFace(_direction.x > 0, false);
             Context.VFX.InstantiateDashVFX(Context.MovementModule.IsFacingRight);
         }
 

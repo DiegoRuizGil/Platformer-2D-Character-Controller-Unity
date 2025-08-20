@@ -10,12 +10,14 @@ namespace Character_Controller.Runtime.Controller.Modules
         public bool IsFacingRight;
 
         private readonly Rigidbody2D _body;
+        private readonly PlayerVFX _playerVFX;
         private readonly InputAction _inputAction;
         
-        public MovementModule(Rigidbody2D body, InputAction inputAction)
+        public MovementModule(Rigidbody2D body, PlayerVFX playerVFX)
         {
             _body = body;
-            _inputAction = inputAction;
+            _playerVFX = playerVFX;
+            _inputAction = InputManager.PlayerActions.Movement;
             
             IsFacingRight = true;
         }
@@ -41,10 +43,14 @@ namespace Character_Controller.Runtime.Controller.Modules
         public void ApplyFriction(float decay) => _body.velocity *= decay;
         public void ApplyHorizontalFriction(float decay) => _body.velocity = new Vector2(_body.velocity.x * decay, _body.velocity.y);
 
-        public void SetDirectionToFace(bool isMovingRight)
+        public void SetDirectionToFace(bool isMovingRight, bool isGrounded)
         {
             if (isMovingRight != IsFacingRight)
+            {
                 IsFacingRight = !IsFacingRight;
+                if (isGrounded)
+                    _playerVFX.InstantiateFlipDirectionVFX(IsFacingRight);
+            }
         }
     }
 }
