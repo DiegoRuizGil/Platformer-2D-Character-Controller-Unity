@@ -5,11 +5,7 @@ namespace Character_Controller.Runtime.Controller.States
     public class PlayerJumpingState : PlayerBaseState
     {
         public PlayerJumpingState(PlayerStates key, PlayerController context)
-            : base(key, context)
-        {
-            _lerpAmount = 1f;
-            _canAddBonusJumpApex = true;
-        }
+            : base(key, context) { }
 
         public override void EnterState()
         {

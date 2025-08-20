@@ -3,11 +3,7 @@ namespace Character_Controller.Runtime.Controller.States
     public class PlayerGroundedState : PlayerBaseState
     {
         public PlayerGroundedState(PlayerStates key, PlayerController context)
-            : base(key, context)
-        {
-            _lerpAmount = 1f;
-            _canAddBonusJumpApex = false;
-        }
+            : base(key, context) { }
 
         public override void EnterState()
         {

@@ -9,8 +9,6 @@ namespace Character_Controller.Runtime.Controller.States
         public PlayerFallingState(PlayerStates key, PlayerController context)
             : base(key, context)
         {
-            _lerpAmount = 1f;
-            _canAddBonusJumpApex = true;
         }
 
         public override void EnterState()

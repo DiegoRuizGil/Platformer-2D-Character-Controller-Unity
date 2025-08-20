@@ -5,11 +5,7 @@ namespace Character_Controller.Runtime.Controller.States
     public class PlayerWallJumpingState : PlayerBaseState
     {
         public PlayerWallJumpingState(PlayerStates key, PlayerController context)
-            : base(key, context)
-        {
-            _lerpAmount = Context.Data.wallJumpRunLerp;
-            _canAddBonusJumpApex = true;
-        }
+            : base(key, context) { }
 
         public override void EnterState()
         {

@@ -8,11 +8,8 @@ namespace Character_Controller.Runtime.Controller.States
     }
     
     public abstract class PlayerBaseState : BaseState<PlayerStates>
-    {
-        protected float _lerpAmount;
-        protected bool _canAddBonusJumpApex;
-        
-        public PlayerController Context { get; private set; }
+    { 
+        protected PlayerController Context { get; private set; }
         
         protected PlayerBaseState(PlayerStates key, PlayerController context)
             : base(key)

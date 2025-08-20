@@ -8,11 +8,7 @@ namespace Character_Controller.Runtime.Controller.States
         private float _movingTimer;
         
         public PlayerWallSlidingState(PlayerStates key, PlayerController context)
-            : base(key, context)
-        {
-            _lerpAmount = 1f;
-            _canAddBonusJumpApex = false;
-        }
+            : base(key, context) { }
 
         public override void EnterState()
         {
