@@ -12,7 +12,7 @@ namespace Character_Controller.Runtime.Controller.States
         public override void EnterState()
         {
             // reset additional jumps and dash
-            Context.ResetAdditionalJumps();
+            Context.JumpModule.ResetAdditionalJumps();
             Context.DashModule.IsActive = true;
             
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);

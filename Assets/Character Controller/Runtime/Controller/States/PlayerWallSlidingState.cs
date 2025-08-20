@@ -19,7 +19,7 @@ namespace Character_Controller.Runtime.Controller.States
             _movingTimer = Context.Data.wallSlideReleaseTime;
             _leftSide = Context.LeftWallHit;
             
-            Context.ResetAdditionalJumps();
+            Context.JumpModule.ResetAdditionalJumps();
             Context.MovementModule.SetGravityScale(0);
         }
 

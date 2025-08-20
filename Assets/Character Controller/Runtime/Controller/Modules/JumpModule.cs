@@ -31,5 +31,7 @@ namespace Character_Controller.Runtime.Controller.Modules
             _body.velocity = new Vector2(_body.velocity.x, jumpForce);
             Request = false;
         }
+
+        public void ResetAdditionalJumps() => _additionalJumpsAvailable = _additionalJumps;
     }
 }

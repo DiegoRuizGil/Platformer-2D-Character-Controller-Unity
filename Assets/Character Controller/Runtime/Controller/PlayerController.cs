@@ -123,7 +123,6 @@ namespace Character_Controller.Runtime.Controller
         #endregion
 
         #region Jump Functions
-
         /// <param name="dir">opposite direction of wall</param>
         public void WallJump(int dir)
         {
@@ -141,11 +140,6 @@ namespace Character_Controller.Runtime.Controller
             InstantiateJumpDustVFX();
         }
 
-        public void ResetAdditionalJumps()
-        {
-            JumpModule.AdditionalJumpsAvailable = Data.additionalJumps;
-        }
-        
         private void OnJumpAction(InputAction.CallbackContext context)
         {
             if (context.ReadValueAsButton())
