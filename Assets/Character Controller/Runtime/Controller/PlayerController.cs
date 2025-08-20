@@ -53,7 +53,7 @@ namespace Character_Controller.Runtime.Controller
 
             DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
             MovementModule = new MovementModule(_body, InputManager.PlayerActions.Movement);
-            JumpModule = new JumpModule(_body, Data.additionalJumps);
+            JumpModule = new JumpModule(_body, Data.additionalJumps, Data.jumpInputBufferTime);
         }
 
         protected override void Start()
@@ -106,8 +106,8 @@ namespace Character_Controller.Runtime.Controller
         {
             InputManager.PlayerActions.Movement.Enable();
 
-            InputManager.PlayerActions.Jump.started += OnJumpAction;
-            InputManager.PlayerActions.Jump.canceled += OnJumpAction;
+            InputManager.PlayerActions.Jump.started += JumpModule.OnInput;
+            InputManager.PlayerActions.Jump.canceled += JumpModule.OnInput;
             InputManager.PlayerActions.Jump.Enable();
 
             InputManager.PlayerActions.Dash.performed += DashModule.OnInput;
@@ -138,18 +138,6 @@ namespace Character_Controller.Runtime.Controller
             _body.AddForce(force, ForceMode2D.Impulse);
             
             InstantiateJumpDustVFX();
-        }
-
-        private void OnJumpAction(InputAction.CallbackContext context)
-        {
-            if (context.ReadValueAsButton())
-            {
-                JumpModule.Request = true;
-                JumpModule.LastPressedJumpTime = Data.jumpInputBufferTime; // reset buffer time
-            }
-            
-            // if still pressing jump button, perform long jump
-            JumpModule.HandleLongJumps = context.ReadValueAsButton();
         }
 
         private void ManageJumpBuffer()

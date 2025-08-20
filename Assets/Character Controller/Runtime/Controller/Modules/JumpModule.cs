@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Character_Controller.Runtime.Controller.Modules
 {
@@ -19,11 +20,25 @@ namespace Character_Controller.Runtime.Controller.Modules
 
         private int _additionalJumpsAvailable;
         private readonly int _additionalJumps;
+        private float _inputBuffer;
         
-        public JumpModule(Rigidbody2D body, int additionalJumps)
+        public JumpModule(Rigidbody2D body, int additionalJumps, float inputBufferDuration)
         {
             _body = body;
             _additionalJumps = additionalJumps;
+            _inputBuffer = inputBufferDuration;
+        }
+
+        public void OnInput(InputAction.CallbackContext context)
+        {
+            if (context.ReadValueAsButton())
+            {
+                Request = true;
+                LastPressedJumpTime = _inputBuffer;
+            }
+            
+            // if still pressing jump button, perform long jump
+            HandleLongJumps = context.ReadValueAsButton();
         }
 
         public void Jump(float jumpForce)
