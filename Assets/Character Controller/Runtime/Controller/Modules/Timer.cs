@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Character_Controller.Runtime.Controller.Domain
+namespace Character_Controller.Runtime.Controller.Modules
 {
     public class Timer
     {

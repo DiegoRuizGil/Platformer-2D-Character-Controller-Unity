@@ -1,5 +1,5 @@
 using System.Collections;
-using Character_Controller.Runtime.Controller.Domain;
+using Character_Controller.Runtime.Controller.Modules;
 using Character_Controller.Runtime.Controller.States;
 using Character_Controller.Runtime.StateMachine;
 using UnityEngine;

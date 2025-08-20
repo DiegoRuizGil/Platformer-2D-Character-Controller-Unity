@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Character_Controller.Runtime.Controller.Domain
+namespace Character_Controller.Runtime.Controller.Modules
 {
     public class MovementModule
     {
