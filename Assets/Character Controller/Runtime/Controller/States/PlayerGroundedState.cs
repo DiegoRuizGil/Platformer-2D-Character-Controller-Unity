@@ -18,7 +18,7 @@ namespace Character_Controller.Runtime.Controller.States
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
             
             if (!Context.JumpModule.Request)
-                Context.InstantiateFallDustVFX();
+                Context.VFX.InstantiateFallDustVFX();
         }
 
         public override void UpdateState() { }

@@ -9,20 +9,9 @@ namespace Character_Controller.Runtime.Controller
     [RequireComponent(typeof(Rigidbody2D), typeof(RaycastInfo))]
     public class PlayerController : BaseStateMachine<PlayerStates>
     {
-        #region Serialized Fields
         [field: SerializeField] public PlayerMovementData Data { get; private set; }
-
-        [Header("VFX points")]
-        [SerializeField] private Transform _bottonVFXPoint;
-        [SerializeField] private Transform _leftVFXPoint;
-        [SerializeField] private Transform _rightVFXPoint;
-        
-        [Header("VFX prefabs")]
-        [SerializeField] private Transform _jumpDustVFXPrefab;
-        [SerializeField] private Transform _dashVFXPrefab;
-        [SerializeField] private Transform _flipDirectionVFXPrefab;
-        [SerializeField] private Transform _fallDustVFXPrefab;
-        #endregion
+        [field: Space(10)]
+        [field: SerializeField] public PlayerVFX VFX { get; private set; }
         
         public PlayerStates CurrentState => _currentState.StateKey;
         public DashModule DashModule;
@@ -72,15 +61,9 @@ namespace Character_Controller.Runtime.Controller
                 SetDirectionToFace(MovementModule.Direction.x > 0);
         }
 
-        private void OnEnable()
-        {
-            EnableInput();
-        }
+        private void OnEnable() => EnableInput();
+        private void OnDisable() => DisableInput();
 
-        private void OnDisable()
-        {
-            DisableInput();
-        }
         #endregion
 
         #region State Machine Functions
@@ -139,46 +122,8 @@ namespace Character_Controller.Runtime.Controller
             if (isMovingRight != MovementModule.IsFacingRight)
             {
                 if (IsGrounded)
-                    InstantiateFlipDirectionVFX();
+                    VFX.InstantiateFlipDirectionVFX(MovementModule.IsFacingRight);
             }
-        }
-        #endregion
-        
-        #region VFX Methods
-        public void InstantiateJumpDustVFX()
-        {
-            Instantiate(_jumpDustVFXPrefab, _bottonVFXPoint.position, _jumpDustVFXPrefab.rotation);
-        }
-
-        public void InstantiateDashVFX()
-        {
-            Vector3 vfxScale = _dashVFXPrefab.localScale;
-            vfxScale.x = MovementModule.IsFacingRight ? 1 : -1;
-            _dashVFXPrefab.localScale = vfxScale;
-
-            Transform point = MovementModule.IsFacingRight ? _leftVFXPoint : _rightVFXPoint;
-
-            Instantiate(_dashVFXPrefab, point.position, _dashVFXPrefab.rotation);
-        }
-
-        public void InstantiateFlipDirectionVFX()
-        {
-            Vector3 vfxScale = _flipDirectionVFXPrefab.localScale;
-            vfxScale.x = MovementModule.IsFacingRight ? 1 : -1;
-            _flipDirectionVFXPrefab.localScale = vfxScale;
-            
-            Vector3 position = Vector3.zero;
-            position.y = _bottonVFXPoint.position.y;
-            position.x = MovementModule.IsFacingRight
-                ? _leftVFXPoint.position.x
-                : _rightVFXPoint.position.x;
-
-            Instantiate(_flipDirectionVFXPrefab, position, _flipDirectionVFXPrefab.rotation);
-        }
-
-        public void InstantiateFallDustVFX()
-        {
-            Instantiate(_fallDustVFXPrefab, _bottonVFXPoint.position, _fallDustVFXPrefab.rotation);
         }
         #endregion
         

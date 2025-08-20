@@ -24,7 +24,7 @@ namespace Character_Controller.Runtime.Controller.States
                 _direction = Context.MovementModule.IsFacingRight ? Vector2.right : Vector2.left;
             
             Context.SetDirectionToFace(_direction.x > 0);
-            Context.InstantiateDashVFX();
+            Context.VFX.InstantiateDashVFX(Context.MovementModule.IsFacingRight);
         }
 
         public override void UpdateState()
