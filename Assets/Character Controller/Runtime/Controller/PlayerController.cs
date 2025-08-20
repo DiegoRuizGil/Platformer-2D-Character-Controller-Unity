@@ -38,7 +38,7 @@ namespace Character_Controller.Runtime.Controller
             _body.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();
 
-            DashModule = new DashModule(Data);
+            DashModule = new DashModule(_body, VFX, Data);
             MovementModule = new MovementModule(_body, VFX);
             JumpModule = new JumpModule(_body, VFX, Data);
         }

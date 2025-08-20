@@ -43,7 +43,7 @@ MonoBehaviour:
   slideAccel: 5
   wallSlideReleaseTime: 0.05
   dashSpeed: 20
-  dashTime: 0.15
+  dashDuration: 0.15
   dashRefillTime: 0.2
   dashSleepTime: 0.05
   coyoteTime: 0.2

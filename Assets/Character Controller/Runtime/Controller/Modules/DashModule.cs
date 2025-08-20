@@ -9,17 +9,25 @@ namespace Character_Controller.Runtime.Controller.Modules
         public bool IsActive;
         public bool Request;
 
-        private readonly Timer _inputBuffer;
-        private readonly Timer _refillTimer;
-        
-        private bool _isRefilling;
-        
+        public bool Completed => _dashTimer.Finished;
         public bool CanDash => IsActive && !_isRefilling;
 
-        public DashModule(PlayerMovementData data)
+        private readonly Rigidbody2D _body;
+        private readonly PlayerVFX _playerVFX;
+        private readonly Timer _inputBuffer;
+        private readonly Timer _refillTimer;
+        private readonly Timer _dashTimer;
+
+
+        private bool _isRefilling;
+
+        public DashModule(Rigidbody2D body, PlayerVFX playerVFX, PlayerMovementData data)
         {
+            _body = body;
+            _playerVFX = playerVFX;
             _inputBuffer = new Timer(data.dashInputBufferTime);
             _refillTimer = new Timer(data.dashRefillTime);
+            _dashTimer = new Timer(data.dashDuration);
         }
 
         public void OnInput(InputAction.CallbackContext context)
@@ -42,6 +50,7 @@ namespace Character_Controller.Runtime.Controller.Modules
 
         public async Task Refill()
         {
+            _dashTimer.Reset();
             _isRefilling = true;
             while (!_refillTimer.Finished)
             {
@@ -51,5 +60,15 @@ namespace Character_Controller.Runtime.Controller.Modules
             _refillTimer.Reset();
             _isRefilling = false;
         }
+
+        public void Dash(Vector2 direction, float speed)
+        {
+            IsActive = false;
+            _body.velocity = direction * speed;
+            
+            _playerVFX.InstantiateDashVFX(direction.x > 0);
+        }
+
+        public void UpdateTimer(float delta) => _dashTimer.Tick(delta);
     }
 }

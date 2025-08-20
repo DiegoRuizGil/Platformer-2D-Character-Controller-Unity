@@ -1,5 +1,6 @@
 using Character_Controller.Runtime.CustomAttributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Character_Controller.Runtime.Controller
 {
@@ -91,7 +92,7 @@ namespace Character_Controller.Runtime.Controller
         [Tooltip("Speed of the dash")]
         public float dashSpeed;
         [Tooltip("Duration of the dash")]
-        public float dashTime;
+        public float dashDuration;
         [Tooltip("Time to recharge the dash after dashing")]
         public float dashRefillTime;
         [Tooltip("Time that the timeScale will be set to 0 when a dash is performed")]
