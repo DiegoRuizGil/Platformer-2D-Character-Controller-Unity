@@ -119,25 +119,6 @@ namespace Character_Controller.Runtime.Controller
             InputManager.PlayerActions.Dash.Disable();
         }
         #endregion
-
-        #region Jump Functions
-        /// <param name="dir">opposite direction of wall</param>
-        public void WallJump(int dir)
-        {
-            Vector2 force = Data.wallJumpForce;
-            force.x *= dir; //apply force in opposite direction of wall
-
-            if (Mathf.Sign(_body.velocity.x) != Mathf.Sign(force.x))
-                force.x -= _body.velocity.x;
-
-            if (_body.velocity.y < 0)
-                force.y -= _body.velocity.y;
-            
-            _body.AddForce(force, ForceMode2D.Impulse);
-            
-            InstantiateJumpDustVFX();
-        }
-        #endregion
         
         #region General Methods
         public void Sleep(float duration)

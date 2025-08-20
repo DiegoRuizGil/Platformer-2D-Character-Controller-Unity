@@ -54,6 +54,12 @@ namespace Character_Controller.Runtime.Controller.Modules
             _body.velocity = new Vector2(_body.velocity.x, jumpForce);
             Request = false;
         }
+        
+        public void WallJump(Vector2 jumpForce, int direction)
+        {
+            _body.velocity = new Vector2(jumpForce.x * direction, jumpForce.y);
+            Request = false;
+        }
 
         public void ResetAdditionalJumps() => _additionalJumpsAvailable = _additionalJumps;
     }

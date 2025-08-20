@@ -15,7 +15,7 @@ namespace Character_Controller.Runtime.Controller.States
         {
             // set wall jump direction
             int dir = Context.LeftWallHit ? 1 : -1;
-            Context.WallJump(dir);
+            Context.JumpModule.WallJump(Context.Data.wallJumpForce, dir);
         }
 
         public override void UpdateState()
