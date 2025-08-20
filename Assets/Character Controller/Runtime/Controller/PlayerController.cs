@@ -3,7 +3,6 @@ using Character_Controller.Runtime.Controller.Modules;
 using Character_Controller.Runtime.Controller.States;
 using Character_Controller.Runtime.StateMachine;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Character_Controller.Runtime.Controller
 {
@@ -66,8 +65,7 @@ namespace Character_Controller.Runtime.Controller
         {
             base.Update();
             
-            // manage input buffers time
-            ManageJumpBuffer();
+            JumpModule.HandleInputBuffer(Time.deltaTime);
             DashModule.HandleInputBuffer(Time.deltaTime);
             
             if (MovementModule.Direction.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
@@ -138,17 +136,6 @@ namespace Character_Controller.Runtime.Controller
             _body.AddForce(force, ForceMode2D.Impulse);
             
             InstantiateJumpDustVFX();
-        }
-
-        private void ManageJumpBuffer()
-        {
-            if (!JumpModule.Request) return;
-            
-            JumpModule.LastPressedJumpTime = JumpModule.LastPressedJumpTime - Time.deltaTime;
-            if (JumpModule.LastPressedJumpTime <= 0)
-            {
-                JumpModule.Request = false;
-            }
         }
         #endregion
         

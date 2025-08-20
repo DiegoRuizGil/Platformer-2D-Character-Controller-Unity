@@ -6,7 +6,7 @@ namespace Character_Controller.Runtime.Controller.Modules
     {
         public bool Finished => _remainingTime <= 0;
         
-        private float _duration;
+        private readonly float _duration;
         private float _remainingTime;
 
         public Timer(float duration)

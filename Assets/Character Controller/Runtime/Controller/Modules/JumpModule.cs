@@ -8,7 +8,6 @@ namespace Character_Controller.Runtime.Controller.Modules
         public bool Request;
         public bool HandleLongJumps;
         public bool IsActiveCoyoteTime;
-        public float LastPressedJumpTime;
         
         public int AdditionalJumpsAvailable
         {
@@ -20,13 +19,13 @@ namespace Character_Controller.Runtime.Controller.Modules
 
         private int _additionalJumpsAvailable;
         private readonly int _additionalJumps;
-        private float _inputBuffer;
+        private readonly Timer _inputBuffer;
         
         public JumpModule(Rigidbody2D body, int additionalJumps, float inputBufferDuration)
         {
             _body = body;
             _additionalJumps = additionalJumps;
-            _inputBuffer = inputBufferDuration;
+            _inputBuffer = new Timer(inputBufferDuration);
         }
 
         public void OnInput(InputAction.CallbackContext context)
@@ -34,11 +33,20 @@ namespace Character_Controller.Runtime.Controller.Modules
             if (context.ReadValueAsButton())
             {
                 Request = true;
-                LastPressedJumpTime = _inputBuffer;
+                _inputBuffer.Reset();
             }
             
             // if still pressing jump button, perform long jump
             HandleLongJumps = context.ReadValueAsButton();
+        }
+
+        public void HandleInputBuffer(float delta)
+        {
+            if (!Request) return;
+            
+            _inputBuffer.Tick(delta);
+            if (_inputBuffer.Finished)
+                Request = false;
         }
 
         public void Jump(float jumpForce)
