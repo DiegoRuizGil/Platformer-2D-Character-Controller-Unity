@@ -27,7 +27,7 @@ namespace Character_Controller.Runtime.Controller.States
             }
             else
             {
-                Context.IsActiveCoyoteTime = false;
+                Context.JumpModule.IsActiveCoyoteTime = false;
             }
             
             float gravityScale = Context.Data.gravityScale;
@@ -50,7 +50,7 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void ExitState()
         {
-            Context.IsActiveCoyoteTime = false;
+            Context.JumpModule.IsActiveCoyoteTime = false;
         }
 
         public override PlayerStates GetNextState()
@@ -58,14 +58,14 @@ namespace Character_Controller.Runtime.Controller.States
             if (Context.IsGrounded)
                 return PlayerStates.Grounded;
             
-            if (Context.JumpRequest)
+            if (Context.JumpModule.Request)
             {
-                if (Context.IsActiveCoyoteTime)
+                if (Context.JumpModule.IsActiveCoyoteTime)
                     return PlayerStates.Jumping;
 
-                if (Context.AdditionalJumpsAvailable > 0)
+                if (Context.JumpModule.AdditionalJumpsAvailable > 0)
                 {
-                    Context.AdditionalJumpsAvailable--;
+                    Context.JumpModule.AdditionalJumpsAvailable--;
                     return PlayerStates.Jumping;
                 }
             }

@@ -24,7 +24,7 @@ namespace Character_Controller.Runtime.Controller.States
             {
                 gravityScale *= Context.Data.jumpHangGravityMult;
             }
-            else if (!Context.HandleLongJumps)
+            else if (!Context.JumpModule.HandleLongJumps)
             {
                 // set higher gravity when releasing the jump button
                 gravityScale *= Context.Data.jumpCutGravity;

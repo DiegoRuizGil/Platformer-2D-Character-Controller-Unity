@@ -17,7 +17,7 @@ namespace Character_Controller.Runtime.Controller.States
             
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
             
-            if (!Context.JumpRequest)
+            if (!Context.JumpModule.Request)
                 Context.InstantiateFallDustVFX();
         }
 
@@ -37,13 +37,13 @@ namespace Character_Controller.Runtime.Controller.States
             // set coyote time just when falling
             if (!Context.IsGrounded)
             {
-                Context.IsActiveCoyoteTime = true;
+                Context.JumpModule.IsActiveCoyoteTime = true;
                 return PlayerStates.Falling;
             }
             
-            if (Context.JumpRequest)
+            if (Context.JumpModule.Request)
             {
-                Context.IsActiveCoyoteTime = false;
+                Context.JumpModule.IsActiveCoyoteTime = false;
                 return PlayerStates.Jumping;
             }
 

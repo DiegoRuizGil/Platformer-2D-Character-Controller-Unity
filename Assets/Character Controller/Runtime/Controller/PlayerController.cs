@@ -28,9 +28,13 @@ namespace Character_Controller.Runtime.Controller
         public PlayerStates CurrentState => _currentState.StateKey;
         public DashModule DashModule;
         public MovementModule MovementModule;
-        
+        public JumpModule JumpModule;
+
+        public bool IsGrounded => _raycastInfo.HitInfo.Below;
         public bool LeftWallHit => _raycastInfo.HitInfo.Left;
         public bool RightWallHit => _raycastInfo.HitInfo.Right;
+        public bool IsWallSliding => (LeftWallHit || RightWallHit) && !IsGrounded;
+
         public Vector2 Velocity
         {
             get => _rb2d.velocity;
@@ -40,22 +44,6 @@ namespace Character_Controller.Runtime.Controller
         #region Private variables
         private Rigidbody2D _rb2d;
         private RaycastInfo _raycastInfo;
-
-        #endregion
-        
-        #region Jump Parameters
-        private float _lastPressedJumpTime;
-        private int _additionalJumps;
-        public bool IsGrounded => _raycastInfo.HitInfo.Below;
-        public bool IsWallSliding => (LeftWallHit || RightWallHit) && !IsGrounded;
-        public bool JumpRequest { get; private set; }
-        public bool HandleLongJumps { get; private set; }
-        public bool IsActiveCoyoteTime { get; set; }
-        public int AdditionalJumpsAvailable
-        {
-            get => _additionalJumps;
-            set => _additionalJumps = Mathf.Clamp(value, 0, Data.additionalJumps);
-        }
         #endregion
 
         #region Unity Functions
@@ -67,6 +55,7 @@ namespace Character_Controller.Runtime.Controller
 
             DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
             MovementModule = new MovementModule(_rb2d, InputManager.PlayerActions.Movement);
+            JumpModule = new JumpModule(Data.additionalJumps);
         }
 
         protected override void Start()
@@ -138,7 +127,7 @@ namespace Character_Controller.Runtime.Controller
         #region Jump Functions
         public void Jump()
         {
-            JumpRequest = false;
+            JumpModule.Request = false;
             
             float force = Data.jumpForce;
             
@@ -170,29 +159,29 @@ namespace Character_Controller.Runtime.Controller
 
         public void ResetAdditionalJumps()
         {
-            AdditionalJumpsAvailable = Data.additionalJumps;
+            JumpModule.AdditionalJumpsAvailable = Data.additionalJumps;
         }
         
         private void OnJumpAction(InputAction.CallbackContext context)
         {
             if (context.ReadValueAsButton())
             {
-                JumpRequest = true;
-                _lastPressedJumpTime = Data.jumpInputBufferTime; // reset buffer time
+                JumpModule.Request = true;
+                JumpModule.LastPressedJumpTime = Data.jumpInputBufferTime; // reset buffer time
             }
             
             // if still pressing jump button, perform long jump
-            HandleLongJumps = context.ReadValueAsButton();
+            JumpModule.HandleLongJumps = context.ReadValueAsButton();
         }
 
         private void ManageJumpBuffer()
         {
-            if (!JumpRequest) return;
+            if (!JumpModule.Request) return;
             
-            _lastPressedJumpTime -= Time.deltaTime;
-            if (_lastPressedJumpTime <= 0)
+            JumpModule.LastPressedJumpTime = JumpModule.LastPressedJumpTime - Time.deltaTime;
+            if (JumpModule.LastPressedJumpTime <= 0)
             {
-                JumpRequest = false;
+                JumpModule.Request = false;
             }
         }
         #endregion
