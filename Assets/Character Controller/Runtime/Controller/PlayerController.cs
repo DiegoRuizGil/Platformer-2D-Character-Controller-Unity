@@ -37,25 +37,23 @@ namespace Character_Controller.Runtime.Controller
 
         public Vector2 Velocity
         {
-            get => _rb2d.velocity;
-            set => _rb2d.velocity = value;
+            get => _body.velocity;
+            set => _body.velocity = value;
         }
 
-        #region Private variables
-        private Rigidbody2D _rb2d;
+        private Rigidbody2D _body;
         private RaycastInfo _raycastInfo;
-        #endregion
 
         #region Unity Functions
         private void Awake()
         {
-            _rb2d = GetComponent<Rigidbody2D>();
-            _rb2d.gravityScale = 0f;
+            _body = GetComponent<Rigidbody2D>();
+            _body.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();
 
             DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
-            MovementModule = new MovementModule(_rb2d, InputManager.PlayerActions.Movement);
-            JumpModule = new JumpModule(Data.additionalJumps);
+            MovementModule = new MovementModule(_body, InputManager.PlayerActions.Movement);
+            JumpModule = new JumpModule(_body, Data.additionalJumps);
         }
 
         protected override void Start()
@@ -125,20 +123,6 @@ namespace Character_Controller.Runtime.Controller
         #endregion
 
         #region Jump Functions
-        public void Jump()
-        {
-            JumpModule.Request = false;
-            
-            float force = Data.jumpForce;
-            
-            // avoid shorter jumps when falling and jumping with coyote time
-            if (_rb2d.velocity.y < 0)
-                force -= _rb2d.velocity.y;
-            
-            _rb2d.AddForce(Vector2.up * force, ForceMode2D.Impulse);
-
-            InstantiateJumpDustVFX();
-        }
 
         /// <param name="dir">opposite direction of wall</param>
         public void WallJump(int dir)
@@ -146,13 +130,13 @@ namespace Character_Controller.Runtime.Controller
             Vector2 force = Data.wallJumpForce;
             force.x *= dir; //apply force in opposite direction of wall
 
-            if (Mathf.Sign(_rb2d.velocity.x) != Mathf.Sign(force.x))
-                force.x -= _rb2d.velocity.x;
+            if (Mathf.Sign(_body.velocity.x) != Mathf.Sign(force.x))
+                force.x -= _body.velocity.x;
 
-            if (_rb2d.velocity.y < 0)
-                force.y -= _rb2d.velocity.y;
+            if (_body.velocity.y < 0)
+                force.y -= _body.velocity.y;
             
-            _rb2d.AddForce(force, ForceMode2D.Impulse);
+            _body.AddForce(force, ForceMode2D.Impulse);
             
             InstantiateJumpDustVFX();
         }

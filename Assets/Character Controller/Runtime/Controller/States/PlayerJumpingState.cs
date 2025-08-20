@@ -14,7 +14,7 @@ namespace Character_Controller.Runtime.Controller.States
         public override void EnterState()
         {
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
-            Context.Jump();
+            Context.JumpModule.Jump(Context.Data.jumpForce);
         }
 
         public override void UpdateState()

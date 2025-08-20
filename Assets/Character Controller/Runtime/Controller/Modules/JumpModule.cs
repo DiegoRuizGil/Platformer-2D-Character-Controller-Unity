@@ -15,12 +15,21 @@ namespace Character_Controller.Runtime.Controller.Modules
             set => _additionalJumpsAvailable = Mathf.Clamp(value, 0, _additionalJumps);
         }
 
+        private readonly Rigidbody2D _body;
+
         private int _additionalJumpsAvailable;
         private readonly int _additionalJumps;
         
-        public JumpModule(int additionalJumps)
+        public JumpModule(Rigidbody2D body, int additionalJumps)
         {
+            _body = body;
             _additionalJumps = additionalJumps;
+        }
+
+        public void Jump(float jumpForce)
+        {
+            _body.velocity = new Vector2(_body.velocity.x, jumpForce);
+            Request = false;
         }
     }
 }
