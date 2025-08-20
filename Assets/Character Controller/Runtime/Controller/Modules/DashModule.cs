@@ -16,10 +16,10 @@ namespace Character_Controller.Runtime.Controller.Modules
         
         public bool CanDash => IsActive && !_isRefilling;
 
-        public DashModule(float inputBufferDuration, float refillDuration)
+        public DashModule(PlayerMovementData data)
         {
-            _inputBuffer = new Timer(inputBufferDuration);
-            _refillTimer = new Timer(refillDuration);
+            _inputBuffer = new Timer(data.dashInputBufferTime);
+            _refillTimer = new Timer(data.dashRefillTime);
         }
 
         public void OnInput(InputAction.CallbackContext context)

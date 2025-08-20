@@ -22,12 +22,12 @@ namespace Character_Controller.Runtime.Controller.Modules
         private readonly int _additionalJumps;
         private readonly Timer _inputBuffer;
         
-        public JumpModule(Rigidbody2D body, PlayerVFX playerVFX, int additionalJumps, float inputBufferDuration)
+        public JumpModule(Rigidbody2D body, PlayerVFX playerVFX, PlayerMovementData data)
         {
             _body = body;
             _playerVFX = playerVFX;
-            _additionalJumps = additionalJumps;
-            _inputBuffer = new Timer(inputBufferDuration);
+            _additionalJumps = data.additionalJumps;
+            _inputBuffer = new Timer(data.jumpInputBufferTime);
         }
 
         public void OnInput(InputAction.CallbackContext context)

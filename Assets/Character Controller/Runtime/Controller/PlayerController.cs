@@ -38,9 +38,9 @@ namespace Character_Controller.Runtime.Controller
             _body.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();
 
-            DashModule = new DashModule(Data.dashInputBufferTime, Data.dashRefillTime);
+            DashModule = new DashModule(Data);
             MovementModule = new MovementModule(_body, VFX);
-            JumpModule = new JumpModule(_body, VFX, Data.additionalJumps, Data.jumpInputBufferTime);
+            JumpModule = new JumpModule(_body, VFX, Data);
         }
 
         protected override void Update()
