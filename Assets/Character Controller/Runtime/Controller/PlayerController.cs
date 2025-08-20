@@ -28,14 +28,7 @@ namespace Character_Controller.Runtime.Controller
         public PlayerStates CurrentState => _currentState.StateKey;
         public DashModule DashModule;
         public MovementModule MovementModule;
-
-        #region Private variables
-        private Rigidbody2D _rb2d;
-        private RaycastInfo _raycastInfo;
-
-        #endregion
-
-        #region Movement Parameters
+        
         public bool LeftWallHit => _raycastInfo.HitInfo.Left;
         public bool RightWallHit => _raycastInfo.HitInfo.Right;
         public Vector2 Velocity
@@ -43,6 +36,11 @@ namespace Character_Controller.Runtime.Controller
             get => _rb2d.velocity;
             set => _rb2d.velocity = value;
         }
+
+        #region Private variables
+        private Rigidbody2D _rb2d;
+        private RaycastInfo _raycastInfo;
+
         #endregion
         
         #region Jump Parameters
