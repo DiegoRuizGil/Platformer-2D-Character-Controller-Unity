@@ -77,6 +77,8 @@ namespace Character_Controller.Runtime.Controller
         [Space(5)]
         [Tooltip("Reduces the effect of player's movement while wall jumping")]
         [Range(0, 1)] public float wallJumpRunLerp;
+        public float wallJumpAccelerationMult;
+        public float wallJumpMinDistance;
 
         [Space(20)]
         

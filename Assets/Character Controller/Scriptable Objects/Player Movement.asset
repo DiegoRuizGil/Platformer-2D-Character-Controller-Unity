@@ -39,9 +39,11 @@ MonoBehaviour:
   jumpHangMaxSpeedMult: 1
   wallJumpForce: {x: 8.5, y: 20}
   wallJumpRunLerp: 0.075
+  wallJumpAccelerationMult: 0.1
+  wallJumpMinDistance: 0.15
   slideSpeed: 9
   slideAccel: 5
-  wallSlideReleaseTime: 0.05
+  wallSlideReleaseTime: 0.1
   dashSpeed: 20
   dashDuration: 0.15
   dashRefillTime: 0.2
