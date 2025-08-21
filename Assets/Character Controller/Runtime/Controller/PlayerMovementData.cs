@@ -48,6 +48,10 @@ namespace Character_Controller.Runtime.Controller
         [Range(0, 1)] public float decelInAirMult;
 
         [Space(20)]
+        [Header("CROUCH")]
+        public float crouchSpeed;
+        
+        [Space(20)]
         
         [Header("JUMP")]
         [Tooltip("Height of the player's jump")]

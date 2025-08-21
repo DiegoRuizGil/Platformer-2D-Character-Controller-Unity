@@ -28,6 +28,7 @@ MonoBehaviour:
   runDecelAmount: 50
   accelInAirMult: 1
   decelInAirMult: 1
+  crouchSpeed: 4
   jumpHeight: 4.5
   jumpTimeToApex: 0.4
   jumpForce: 22.5

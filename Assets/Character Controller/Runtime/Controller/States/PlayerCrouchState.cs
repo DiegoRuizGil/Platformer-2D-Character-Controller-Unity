@@ -12,7 +12,9 @@
 
         public override void FixedUpdateState()
         {
-            
+            Context.MovementModule.Move(Context.Direction, Context.Data.crouchSpeed, Context.Data.acceleration);
+            if (Context.Direction.x == 0)
+                Context.MovementModule.ApplyFriction(Context.Data.groundDecay);
         }
 
         public override PlayerStates GetNextState()
