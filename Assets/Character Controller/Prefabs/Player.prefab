@@ -31,7 +31,6 @@ Transform:
   m_Children:
   - {fileID: 7473157997415880837}
   - {fileID: 5074399836389475400}
-  - {fileID: 6793574015419998073}
   m_Father: {fileID: 4355518657921072824}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6314527042099867395
@@ -65,37 +64,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2943762101913044436}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8531011993054243677
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6793574015419998073}
-  m_Layer: 0
-  m_Name: Right
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6793574015419998073
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8531011993054243677}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.75, y: -0.351, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2943762101913044436}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8650759686709486247
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,7 +76,6 @@ GameObject:
   - component: {fileID: 288412870432373831}
   - component: {fileID: 8164540082923448349}
   - component: {fileID: 2610229818795610484}
-  - component: {fileID: 5229660195165627122}
   - component: {fileID: 4305167188311968461}
   - component: {fileID: 3288018760039779216}
   m_Layer: 0
@@ -145,7 +112,7 @@ Animator:
   m_GameObject: {fileID: 8650759686709486247}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: cdb7c2fb2a6039a40afaf607eeaf6896, type: 2}
+  m_Controller: {fileID: 9100000, guid: d0917b7d78f3a64489297596b22a501f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -228,19 +195,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.8, y: 1.2}
   m_EdgeRadius: 0
---- !u!114 &5229660195165627122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8650759686709486247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92ffd45aee3bd6b44830ec12eee2d258, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _spriteRenderer: {fileID: 3017324411886504599}
 --- !u!114 &4305167188311968461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,13 +208,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Data>k__BackingField: {fileID: 11400000, guid: e0b96f3966ec55549b4c9788f9f2dcac, type: 2}
-  _bottonVFXPoint: {fileID: 7473157997415880837}
-  _leftVFXPoint: {fileID: 5074399836389475400}
-  _rightVFXPoint: {fileID: 6793574015419998073}
-  _jumpDustVFXPrefab: {fileID: 260539179029066046, guid: f55ebe8caf88ead4daa173654aa94f03, type: 3}
-  _dashVFXPrefab: {fileID: 260539179029066046, guid: e02b017b03c757c4ca5cbe16eb60a6ec, type: 3}
-  _flipDirectionVFXPrefab: {fileID: 260539179029066046, guid: 554c4bb135372e444a1d10cd335e3ece, type: 3}
-  _fallDustVFXPrefab: {fileID: 260539179029066046, guid: ee0b56427e5ac8d4ebca6b8fe5876abf, type: 3}
+  <VFX>k__BackingField:
+    bottomVFXPoint: {fileID: 7473157997415880837}
+    leftVFXPoint: {fileID: 5074399836389475400}
+    jumpDustVFXPrefab: {fileID: 260539179029066046, guid: f55ebe8caf88ead4daa173654aa94f03, type: 3}
+    dashVFXPrefab: {fileID: 260539179029066046, guid: e02b017b03c757c4ca5cbe16eb60a6ec, type: 3}
+    flipDirectionVFXPrefab: {fileID: 260539179029066046, guid: 554c4bb135372e444a1d10cd335e3ece, type: 3}
+    fallDustVFXPrefab: {fileID: 260539179029066046, guid: ee0b56427e5ac8d4ebca6b8fe5876abf, type: 3}
 --- !u!114 &3288018760039779216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,7 +229,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skinWidth: 0.015
   _rayLenght: 0.05
-  _cornersRayLenght: 0.1
   _verticalRayCount: 4
   _horizontalRayCount: 4
   _collisionLayers:
@@ -287,8 +240,6 @@ MonoBehaviour:
     Right: 0
     Above: 0
     Below: 0
-    CornerLeft: 0
-    CornerRight: 0
 --- !u!1 &8944917453443969712
 GameObject:
   m_ObjectHideFlags: 0

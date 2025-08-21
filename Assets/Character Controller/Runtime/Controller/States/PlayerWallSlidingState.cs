@@ -12,6 +12,8 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void EnterState()
         {
+            Context.Animator.Play("Sliding");
+            
             _movingTimer = Context.Data.wallSlideReleaseTime;
             _leftSide = Context.LeftWallHit;
             

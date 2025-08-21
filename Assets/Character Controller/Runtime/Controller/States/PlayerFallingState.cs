@@ -13,6 +13,8 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void EnterState()
         {
+            Context.Animator.Play("Falling");
+            
             _timeInState = 0f;
         }
 

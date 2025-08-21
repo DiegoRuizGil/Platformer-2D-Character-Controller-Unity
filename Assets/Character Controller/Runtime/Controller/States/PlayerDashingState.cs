@@ -11,6 +11,8 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void EnterState()
         {
+            Context.Animator.Play("Dash");
+            
             Context.MovementModule.SetGravityScale(0);
             Context.Sleep(Context.Data.dashSleepTime); // add small reaction time to the player
 

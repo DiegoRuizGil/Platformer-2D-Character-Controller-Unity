@@ -44,6 +44,8 @@ namespace Character_Controller.Runtime.Controller.Modules
             if (isMovingRight != IsFacingRight)
             {
                 IsFacingRight = !IsFacingRight;
+                _body.transform.rotation = Quaternion.Euler(0f, IsFacingRight ? 0f : 180f, 0f);
+                
                 if (isGrounded)
                     _playerVFX.InstantiateFlipDirectionVFX(IsFacingRight);
             }

@@ -9,6 +9,8 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void EnterState()
         {
+            Context.Animator.Play("Jumping");
+            
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
             Context.JumpModule.Jump(Context.Data.jumpForce);
         }

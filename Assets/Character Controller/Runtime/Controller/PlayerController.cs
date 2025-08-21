@@ -14,6 +14,8 @@ namespace Character_Controller.Runtime.Controller
         [field: Space(10)]
         [field: SerializeField] public PlayerVFX VFX { get; private set; }
         
+        public Animator Animator { get; private set; }
+        
         public PlayerStates CurrentState => _currentState.StateKey;
         public DashModule DashModule;
         public MovementModule MovementModule;
@@ -39,6 +41,8 @@ namespace Character_Controller.Runtime.Controller
 
         private void Awake()
         {
+            Animator = GetComponent<Animator>();
+            
             _body = GetComponent<Rigidbody2D>();
             _body.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();

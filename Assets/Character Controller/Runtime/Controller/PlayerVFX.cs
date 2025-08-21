@@ -8,7 +8,6 @@ namespace Character_Controller.Runtime.Controller
         [Header("Positions")]
         [SerializeField] private Transform bottomVFXPoint;
         [SerializeField] private Transform leftVFXPoint;
-        [SerializeField] private Transform rightVFXPoint;
         
         [Header("Prefabs")]
         [SerializeField] private Transform jumpDustVFXPrefab;
@@ -27,12 +26,8 @@ namespace Character_Controller.Runtime.Controller
             vfxScale.x = isFacingRight ? 1 : -1;
             flipDirectionVFXPrefab.localScale = vfxScale;
             
-            Vector3 position = Vector3.zero;
-            position.y = bottomVFXPoint.position.y;
-            position.x = isFacingRight
-                ? leftVFXPoint.position.x
-                : rightVFXPoint.position.x;
-
+            Vector3 position = new Vector3(leftVFXPoint.position.x, bottomVFXPoint.position.y);
+            
             Object.Instantiate(flipDirectionVFXPrefab, position, flipDirectionVFXPrefab.rotation);
         }
         
@@ -42,9 +37,7 @@ namespace Character_Controller.Runtime.Controller
             vfxScale.x = isFacingRight ? 1 : -1;
             dashVFXPrefab.localScale = vfxScale;
 
-            Transform point = isFacingRight ? leftVFXPoint : rightVFXPoint;
-
-            Object.Instantiate(dashVFXPrefab, point.position, dashVFXPrefab.rotation);
+            Object.Instantiate(dashVFXPrefab, leftVFXPoint.position, dashVFXPrefab.rotation);
         }
         
         public void InstantiateJumpDustVFX()

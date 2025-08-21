@@ -11,6 +11,8 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void EnterState()
         {
+            Context.Animator.Play("Jumping");
+            
             _initialXPosition = Context.transform.position.x;
             
             int jumpDirection = Context.LeftWallHit ? 1 : -1;

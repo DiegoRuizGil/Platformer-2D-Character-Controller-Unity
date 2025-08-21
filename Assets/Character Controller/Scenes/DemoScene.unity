@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &272004835 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6793574015419998073, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-  m_PrefabInstance: {fileID: 8053594523311752294}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,11 +467,6 @@ MonoBehaviour:
   m_BoundingShape2D: {fileID: 911020406}
   m_Damping: 0.5
   m_MaxWindowSize: -1
---- !u!4 &1486906655 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7473157997415880837, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-  m_PrefabInstance: {fileID: 8053594523311752294}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1500737706 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4355518657921072824, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
@@ -11780,11 +11770,6 @@ Transform:
   - {fileID: 1540215731}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1716993551 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5074399836389475400, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-  m_PrefabInstance: {fileID: 8053594523311752294}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1909776407
 GameObject:
   m_ObjectHideFlags: 3
@@ -11965,38 +11950,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3288018760039779216, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: _showDebugRays
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4305167188311968461, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: <VFX>k__BackingField.leftVFXPoint
-      value: 
-      objectReference: {fileID: 1716993551}
-    - target: {fileID: 4305167188311968461, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: <VFX>k__BackingField.dashVFXPrefab
-      value: 
-      objectReference: {fileID: 260539179029066046, guid: e02b017b03c757c4ca5cbe16eb60a6ec, type: 3}
-    - target: {fileID: 4305167188311968461, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: <VFX>k__BackingField.rightVFXPoint
-      value: 
-      objectReference: {fileID: 272004835}
-    - target: {fileID: 4305167188311968461, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: <VFX>k__BackingField.bottomVFXPoint
-      value: 
-      objectReference: {fileID: 1486906655}
-    - target: {fileID: 4305167188311968461, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: <VFX>k__BackingField.fallDustVFXPrefab
-      value: 
-      objectReference: {fileID: 260539179029066046, guid: ee0b56427e5ac8d4ebca6b8fe5876abf, type: 3}
-    - target: {fileID: 4305167188311968461, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: <VFX>k__BackingField.jumpDustVFXPrefab
-      value: 
-      objectReference: {fileID: 260539179029066046, guid: f55ebe8caf88ead4daa173654aa94f03, type: 3}
-    - target: {fileID: 4305167188311968461, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
-      propertyPath: <VFX>k__BackingField.flipDirectionVFXPrefab
-      value: 
-      objectReference: {fileID: 260539179029066046, guid: 554c4bb135372e444a1d10cd335e3ece, type: 3}
     - target: {fileID: 4355518657921072824, guid: a5f0dfd626aff3d4d96d20d24a2d40ec, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
