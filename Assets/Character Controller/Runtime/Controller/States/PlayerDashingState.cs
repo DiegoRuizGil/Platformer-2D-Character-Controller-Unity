@@ -47,8 +47,8 @@ namespace Character_Controller.Runtime.Controller.States
         
         private Vector2 GetDirection()
         {
-            if (Context.MovementModule.Direction.x != 0f)
-                return Context.MovementModule.Direction.x < 0 ? Vector2.left : Vector2.right;
+            if (Context.Direction.x != 0f)
+                return Context.Direction.x < 0 ? Vector2.left : Vector2.right;
             
             return Context.MovementModule.IsFacingRight ? Vector2.right : Vector2.left;
         }

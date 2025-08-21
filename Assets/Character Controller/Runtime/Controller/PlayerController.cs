@@ -3,6 +3,7 @@ using Character_Controller.Runtime.Controller.Modules;
 using Character_Controller.Runtime.Controller.States;
 using Character_Controller.Runtime.StateMachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Character_Controller.Runtime.Controller
 {
@@ -29,14 +30,19 @@ namespace Character_Controller.Runtime.Controller
             set => _body.velocity = value;
         }
 
+        public Vector2 Direction => _movementAction.ReadValue<Vector2>();
+
         private Rigidbody2D _body;
         private RaycastInfo _raycastInfo;
+
+        private InputAction _movementAction;
 
         private void Awake()
         {
             _body = GetComponent<Rigidbody2D>();
             _body.gravityScale = 0f;
             _raycastInfo = GetComponent<RaycastInfo>();
+            _movementAction = InputManager.PlayerActions.Movement;
 
             DashModule = new DashModule(_body, VFX, Data);
             MovementModule = new MovementModule(_body, VFX);
@@ -50,8 +56,8 @@ namespace Character_Controller.Runtime.Controller
             JumpModule.HandleInputBuffer(Time.deltaTime);
             DashModule.HandleInputBuffer(Time.deltaTime);
             
-            if (MovementModule.Direction.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
-                MovementModule.SetDirectionToFace(MovementModule.Direction.x > 0, IsGrounded);
+            if (Direction.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
+                MovementModule.SetDirectionToFace(Direction.x > 0, IsGrounded);
         }
 
         private void OnEnable() => EnableInput();
@@ -111,7 +117,7 @@ namespace Character_Controller.Runtime.Controller
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"<color=black><size=20>Input: {MovementModule.Direction}</size></color>");
+            GUILayout.Label($"<color=black><size=20>Input: {Direction}</size></color>");
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();

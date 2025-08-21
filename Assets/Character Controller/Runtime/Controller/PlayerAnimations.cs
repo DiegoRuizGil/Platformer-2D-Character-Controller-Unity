@@ -50,7 +50,7 @@ namespace Character_Controller.Runtime.Controller
         private void FlipSprite()
         {
             if (!_spriteRenderer) return;
-            if (_player.MovementModule.Direction.x == 0) return;
+            if (_player.Direction.x == 0) return;
 
             _spriteRenderer.flipX = !_player.MovementModule.IsFacingRight;
         }

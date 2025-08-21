@@ -22,8 +22,8 @@ namespace Character_Controller.Runtime.Controller.States
         public override void UpdateState()
         {
             // check time pressing movement input
-            if (Context.MovementModule.Direction.x > 0 && _leftSide
-                || Context.MovementModule.Direction.x < 0 && !_leftSide)
+            if (Context.Direction.x > 0 && _leftSide
+                || Context.Direction.x < 0 && !_leftSide)
             {
                 _movingTimer -= Time.deltaTime;
             }
@@ -40,7 +40,7 @@ namespace Character_Controller.Runtime.Controller.States
             // if input has been pressed for long enough,
             // allow the player to move horizontally
             if (_movingTimer <= 0)
-                Context.MovementModule.Move(Context.Data.runMaxSpeed, Context.Data.acceleration);
+                Context.MovementModule.Move(Context.Direction, Context.Data.runMaxSpeed, Context.Data.acceleration);
         }
 
         public override PlayerStates GetNextState()
