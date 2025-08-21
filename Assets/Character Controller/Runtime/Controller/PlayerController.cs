@@ -20,6 +20,7 @@ namespace Character_Controller.Runtime.Controller
         public DashModule DashModule;
         public MovementModule MovementModule;
         public JumpModule JumpModule;
+        public CrouchModule CrouchModule;
 
         public bool IsGrounded => _raycastInfo.HitInfo.Below;
         public bool LeftWallHit => _raycastInfo.HitInfo.Left;
@@ -51,6 +52,7 @@ namespace Character_Controller.Runtime.Controller
             DashModule = new DashModule(_body, VFX, Data);
             MovementModule = new MovementModule(_body, VFX);
             JumpModule = new JumpModule(_body, VFX, Data);
+            CrouchModule = new CrouchModule();
         }
 
         protected override void Update()
@@ -76,6 +78,7 @@ namespace Character_Controller.Runtime.Controller
             States.Add(PlayerStates.WallSliding, new PlayerWallSlidingState(PlayerStates.WallSliding, this));
             States.Add(PlayerStates.WallJumping, new PlayerWallJumpingState(PlayerStates.WallJumping, this));
             States.Add(PlayerStates.Dashing, new PlayerDashingState(PlayerStates.Dashing, this));
+            States.Add(PlayerStates.Crouching, new PlayerCrouchState(PlayerStates.Crouching, this));
             
             // set the player's initial state
             _currentState = States[PlayerStates.Grounded];
@@ -91,6 +94,10 @@ namespace Character_Controller.Runtime.Controller
 
             InputManager.PlayerActions.Dash.performed += DashModule.OnInput;
             InputManager.PlayerActions.Dash.Enable();
+            
+            InputManager.PlayerActions.Crouch.started += CrouchModule.OnInput;
+            InputManager.PlayerActions.Crouch.canceled += CrouchModule.OnInput;
+            InputManager.PlayerActions.Crouch.Enable();
         }
 
         private void DisableInput()
@@ -98,6 +105,7 @@ namespace Character_Controller.Runtime.Controller
             InputManager.PlayerActions.Movement.Disable();
             InputManager.PlayerActions.Jump.Disable();
             InputManager.PlayerActions.Dash.Disable();
+            InputManager.PlayerActions.Crouch.Disable();
         }
         
         public void Sleep(float duration)

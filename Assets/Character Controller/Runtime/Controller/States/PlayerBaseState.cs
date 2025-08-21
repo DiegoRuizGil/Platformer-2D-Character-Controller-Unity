@@ -4,7 +4,7 @@ namespace Character_Controller.Runtime.Controller.States
 {
     public enum PlayerStates
     {
-        Grounded, Jumping, Falling, WallSliding, WallJumping, Dashing
+        Grounded, Jumping, Falling, WallSliding, WallJumping, Dashing, Crouching
     }
     
     public abstract class PlayerBaseState : BaseState<PlayerStates>

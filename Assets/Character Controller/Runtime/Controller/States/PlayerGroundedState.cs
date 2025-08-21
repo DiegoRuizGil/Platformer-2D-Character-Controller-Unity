@@ -57,6 +57,9 @@ namespace Character_Controller.Runtime.Controller.States
 
             if (Context.DashModule.Request && Context.DashModule.CanDash)
                 return PlayerStates.Dashing;
+
+            if (Context.CrouchModule.Request)
+                return PlayerStates.Crouching;
             
             return StateKey;
         }
