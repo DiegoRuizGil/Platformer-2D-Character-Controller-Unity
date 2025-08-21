@@ -17,16 +17,12 @@ namespace Character_Controller.Runtime.Controller.States
                 Context.VFX.InstantiateFallDustVFX();
         }
 
-        public override void UpdateState() { }
-
         public override void FixedUpdateState()
         {
             Context.MovementModule.Move(Context.Data.runMaxSpeed, Context.Data.acceleration);
             if (Context.MovementModule.Direction.x == 0)
                 Context.MovementModule.ApplyFriction(Context.Data.groundDecay);
         }
-
-        public override void ExitState() { }
 
         public override PlayerStates GetNextState()
         {

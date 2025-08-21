@@ -43,8 +43,6 @@ namespace Character_Controller.Runtime.Controller.States
                 Context.MovementModule.Move(Context.Data.runMaxSpeed, Context.Data.acceleration);
         }
 
-        public override void ExitState() { }
-
         public override PlayerStates GetNextState()
         {
             if (Context.IsGrounded)

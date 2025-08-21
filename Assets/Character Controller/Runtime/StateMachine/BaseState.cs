@@ -12,10 +12,10 @@ namespace Character_Controller.Runtime.StateMachine
             StateKey = key;
         }
         
-        public abstract void EnterState();
-        public abstract void UpdateState();
-        public abstract void FixedUpdateState();
-        public abstract void ExitState();
+        public virtual void EnterState() { }
+        public virtual void UpdateState() { }
+        public virtual void FixedUpdateState() { }
+        public virtual void ExitState() { }
         public abstract EState GetNextState();
     }
 }

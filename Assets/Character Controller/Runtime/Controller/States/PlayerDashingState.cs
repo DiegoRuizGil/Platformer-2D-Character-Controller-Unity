@@ -25,8 +25,6 @@ namespace Character_Controller.Runtime.Controller.States
             Context.DashModule.UpdateTimer(Time.deltaTime);
         }
 
-        public override void FixedUpdateState() { }
-
         public override void ExitState()
         {
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);

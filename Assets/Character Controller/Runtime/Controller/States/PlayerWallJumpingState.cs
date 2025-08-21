@@ -31,8 +31,6 @@ namespace Character_Controller.Runtime.Controller.States
             }
         }
 
-        public override void ExitState() { }
-
         public override PlayerStates GetNextState()
         {
             if (Context.Velocity.y < 0)

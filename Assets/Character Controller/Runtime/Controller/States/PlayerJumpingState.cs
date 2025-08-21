@@ -36,8 +36,6 @@ namespace Character_Controller.Runtime.Controller.States
                 Context.MovementModule.ApplyHorizontalFriction(Context.Data.airDecay);
         }
 
-        public override void ExitState() { }
-
         public override PlayerStates GetNextState()
         {
             if (Context.Velocity.y < 0)
