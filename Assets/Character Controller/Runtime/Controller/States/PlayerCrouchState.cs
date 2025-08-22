@@ -25,6 +25,9 @@
 
         public override PlayerStates GetNextState()
         {
+            if (Context.CrouchModule.CeilingAbove)
+                return PlayerStates.Crouching;
+            
             if (!Context.CrouchModule.InputRequest)
                 return PlayerStates.Grounded;
             

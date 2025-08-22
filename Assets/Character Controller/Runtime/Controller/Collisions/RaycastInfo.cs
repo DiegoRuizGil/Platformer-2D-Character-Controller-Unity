@@ -1,5 +1,6 @@
 using Character_Controller.Runtime.CustomAttributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Character_Controller.Runtime.Controller.Collisions
 {
@@ -10,20 +11,20 @@ namespace Character_Controller.Runtime.Controller.Collisions
         
         [Header("Settings")]
         [Tooltip("The character's collision skin width")]
-        [SerializeField] private float _skinWidth = 0.015f;
+        [SerializeField] private float skinWidth = 0.015f;
         [Tooltip("Specifies the length of the raycasts used for collision detection")]
-        [SerializeField] private float _rayLenght = 0.05f;
+        [SerializeField] private float rayLenght = 0.05f;
         [Tooltip("Sets the number of raycasts to be cast for vertical collision detection")]
-        [SerializeField] private int _verticalRayCount = 4;
+        [SerializeField] private int verticalRayCount = 4;
         [Tooltip("Sets the number of raycasts to be cast for horizontal collision detection")]
-        [SerializeField] private int _horizontalRayCount = 4;
+        [SerializeField] private int horizontalRayCount = 4;
         [Tooltip("Specifies the layers for collision detection")]
-        [SerializeField] private LayerMask _collisionLayers;
+        public LayerMask collisionLayers;
         
         [Header("Debug")]
-        [SerializeField] private bool _showDebugRays = true;
+        [SerializeField] private bool showDebugRays = true;
         
-        [SerializeField] private RaycastHitInfo _hitInfo;
+        [SerializeField] private RaycastHitInfo hitInfo;
         private BoxCollider2D _currentCollider;
         
         private Raycaster _raycasterDown;
@@ -31,7 +32,7 @@ namespace Character_Controller.Runtime.Controller.Collisions
         private Raycaster _raycasterLeft;
         private Raycaster _raycasterRight;
 
-        public RaycastHitInfo HitInfo => _hitInfo;
+        public RaycastHitInfo HitInfo => hitInfo;
 
         [System.Serializable]
         public struct RaycastHitInfo
@@ -49,22 +50,22 @@ namespace Character_Controller.Runtime.Controller.Collisions
 
         private void Awake()
         {
-            _raycasterDown = new Raycaster(boxCollider, CollisionDirection.Down, _collisionLayers,
-                _rayLenght, _skinWidth, _verticalRayCount, _showDebugRays);
-            _raycasterUp = new Raycaster(boxCollider, CollisionDirection.Up, _collisionLayers,
-                _rayLenght, _skinWidth, _verticalRayCount, _showDebugRays);
-            _raycasterLeft = new Raycaster(boxCollider, CollisionDirection.Left, _collisionLayers,
-                _rayLenght, _skinWidth, _horizontalRayCount, _showDebugRays);
-            _raycasterRight = new Raycaster(boxCollider, CollisionDirection.Right, _collisionLayers,
-                _rayLenght, _skinWidth, _horizontalRayCount, _showDebugRays);
+            _raycasterDown = new Raycaster(boxCollider, CollisionDirection.Down, collisionLayers,
+                rayLenght, skinWidth, verticalRayCount, showDebugRays);
+            _raycasterUp = new Raycaster(boxCollider, CollisionDirection.Up, collisionLayers,
+                rayLenght, skinWidth, verticalRayCount, showDebugRays);
+            _raycasterLeft = new Raycaster(boxCollider, CollisionDirection.Left, collisionLayers,
+                rayLenght, skinWidth, horizontalRayCount, showDebugRays);
+            _raycasterRight = new Raycaster(boxCollider, CollisionDirection.Right, collisionLayers,
+                rayLenght, skinWidth, horizontalRayCount, showDebugRays);
         }
 
         private void Update()
         {
-            _hitInfo.Below = _raycasterDown.CheckCollision();
-            _hitInfo.Above = _raycasterUp.CheckCollision();
-            _hitInfo.Left = _raycasterLeft.CheckCollision();
-            _hitInfo.Right = _raycasterRight.CheckCollision();
+            hitInfo.Below = _raycasterDown.CheckCollision();
+            hitInfo.Above = _raycasterUp.CheckCollision();
+            hitInfo.Left = _raycasterLeft.CheckCollision();
+            hitInfo.Right = _raycasterRight.CheckCollision();
         }
 
         public void SetCollider(BoxCollider2D boxCollider)
