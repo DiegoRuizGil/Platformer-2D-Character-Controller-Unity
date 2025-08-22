@@ -5,7 +5,7 @@ namespace Character_Controller.Runtime.Controller.Modules
 {
     public class JumpModule
     {
-        public bool Request;
+        public bool InputRequest;
         public bool HandleLongJumps;
         public bool IsActiveCoyoteTime;
         
@@ -34,7 +34,7 @@ namespace Character_Controller.Runtime.Controller.Modules
         {
             if (context.ReadValueAsButton())
             {
-                Request = true;
+                InputRequest = true;
                 _inputBuffer.Reset();
             }
             
@@ -44,17 +44,17 @@ namespace Character_Controller.Runtime.Controller.Modules
 
         public void HandleInputBuffer(float delta)
         {
-            if (!Request) return;
+            if (!InputRequest) return;
             
             _inputBuffer.Tick(delta);
             if (_inputBuffer.Finished)
-                Request = false;
+                InputRequest = false;
         }
 
         public void Jump(float jumpForce)
         {
             _body.velocity = new Vector2(_body.velocity.x, jumpForce);
-            Request = false;
+            InputRequest = false;
             
             _playerVFX.InstantiateJumpDustVFX();
         }
@@ -62,7 +62,7 @@ namespace Character_Controller.Runtime.Controller.Modules
         public void WallJump(Vector2 jumpForce, int direction)
         {
             _body.velocity = new Vector2(jumpForce.x * direction, jumpForce.y);
-            Request = false;
+            InputRequest = false;
             
             _playerVFX.InstantiateJumpDustVFX();
         }

@@ -25,7 +25,7 @@
 
         public override PlayerStates GetNextState()
         {
-            if (!Context.CrouchModule.Request)
+            if (!Context.CrouchModule.InputRequest)
                 return PlayerStates.Grounded;
             
             // set coyote time just when falling
@@ -35,13 +35,13 @@
                 return PlayerStates.Falling;
             }
             
-            if (Context.JumpModule.Request)
+            if (Context.JumpModule.InputRequest)
             {
                 Context.JumpModule.IsActiveCoyoteTime = false;
                 return PlayerStates.Jumping;
             }
 
-            if (Context.DashModule.Request && Context.DashModule.CanDash)
+            if (Context.DashModule.InputRequest && Context.DashModule.CanDash)
                 return PlayerStates.Dashing;
             
             return StateKey;

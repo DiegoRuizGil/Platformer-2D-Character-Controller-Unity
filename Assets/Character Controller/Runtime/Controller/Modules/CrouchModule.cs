@@ -5,7 +5,7 @@ namespace Character_Controller.Runtime.Controller.Modules
 {
     public class CrouchModule
     {
-        public bool Request;
+        public bool InputRequest;
 
         private readonly RaycastInfo _raycastInfo;
         private readonly BoxCollider2D _defaultCollider;
@@ -20,7 +20,7 @@ namespace Character_Controller.Runtime.Controller.Modules
 
         public void OnInput(InputAction.CallbackContext context)
         {
-            Request = context.ReadValueAsButton();
+            InputRequest = context.ReadValueAsButton();
         }
 
         public void SetDefaultCollider()

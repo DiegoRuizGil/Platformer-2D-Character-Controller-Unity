@@ -58,7 +58,7 @@ namespace Character_Controller.Runtime.Controller.States
             if (Context.IsGrounded)
                 return PlayerStates.Grounded;
             
-            if (Context.JumpModule.Request)
+            if (Context.JumpModule.InputRequest)
             {
                 if (Context.JumpModule.IsActiveCoyoteTime)
                     return PlayerStates.Jumping;
@@ -74,7 +74,7 @@ namespace Character_Controller.Runtime.Controller.States
                 && Context.Direction != Vector2.zero)
                 return PlayerStates.WallSliding;
             
-            if (Context.DashModule.Request && Context.DashModule.CanDash)
+            if (Context.DashModule.InputRequest && Context.DashModule.CanDash)
                 return PlayerStates.Dashing;
             
             return StateKey;

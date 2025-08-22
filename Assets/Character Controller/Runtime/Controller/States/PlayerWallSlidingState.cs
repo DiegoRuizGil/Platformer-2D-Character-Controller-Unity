@@ -50,7 +50,7 @@ namespace Character_Controller.Runtime.Controller.States
             if (Context.IsGrounded)
                 return PlayerStates.Grounded;
 
-            if (Context.JumpModule.Request)
+            if (Context.JumpModule.InputRequest)
                 return PlayerStates.WallJumping;
 
             if (!Context.LeftWallHit && !Context.RightWallHit)

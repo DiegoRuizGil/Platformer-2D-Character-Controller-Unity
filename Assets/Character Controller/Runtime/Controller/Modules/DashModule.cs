@@ -7,7 +7,7 @@ namespace Character_Controller.Runtime.Controller.Modules
     public class DashModule
     {
         public bool IsActive;
-        public bool Request;
+        public bool InputRequest;
 
         public bool Completed => _dashTimer.Finished;
         public bool CanDash => IsActive && !_isRefilling;
@@ -34,18 +34,18 @@ namespace Character_Controller.Runtime.Controller.Modules
         {
             if (context.ReadValueAsButton())
             {
-                Request = true;
+                InputRequest = true;
                 _inputBuffer.Reset();
             }
         }
         
         public void HandleInputBuffer(float delta)
         {
-            if (!Request) return;
+            if (!InputRequest) return;
             
             _inputBuffer.Tick(delta);
             if (_inputBuffer.Finished)
-                Request = false;
+                InputRequest = false;
         }
 
         public async Task Refill()

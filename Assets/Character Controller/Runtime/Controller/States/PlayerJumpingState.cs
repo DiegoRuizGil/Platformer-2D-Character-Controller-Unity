@@ -43,7 +43,7 @@ namespace Character_Controller.Runtime.Controller.States
             if (Context.Velocity.y < 0)
                 return PlayerStates.Falling;
             
-            if (Context.DashModule.Request && Context.DashModule.CanDash)
+            if (Context.DashModule.InputRequest && Context.DashModule.CanDash)
                 return PlayerStates.Dashing;
             
             return StateKey;
