@@ -1,4 +1,5 @@
 using System.Collections;
+using Character_Controller.Runtime.Controller.Collisions;
 using Character_Controller.Runtime.Controller.Modules;
 using Character_Controller.Runtime.Controller.States;
 using Character_Controller.Runtime.StateMachine;

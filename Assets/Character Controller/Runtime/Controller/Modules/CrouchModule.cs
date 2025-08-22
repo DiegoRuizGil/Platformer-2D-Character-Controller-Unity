@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Character_Controller.Runtime.Controller.Collisions;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Character_Controller.Runtime.Controller.Modules
