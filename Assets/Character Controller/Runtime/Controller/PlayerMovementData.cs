@@ -28,24 +28,9 @@ namespace Character_Controller.Runtime.Controller
         [Header("RUN")]
         [Tooltip("Target speed we want the player to reach")]
         public float runMaxSpeed;
-
         public float acceleration;
         [Range(0f, 1f)] public float groundDecay;
         [Range(0f, 1f)] public float airDecay;
-        [Tooltip("The speed at which the player accelerates to max speed, can be set to runMaxSpeed to instant acceleration down to 0 for none at all")]
-        public float runAcceleration;
-        [Tooltip("The speed at which the player deceleration to max speed, can be set to runMaxSpeed to instant deceleration down to 0 for none at all")]
-        public float runDeceleration;
-        [Space(5)]
-        [Tooltip("Actual force (multiplied with speedDiff) applied to the player to accelerate")]
-        [ReadOnly] public float runAccelAmount;
-        [Tooltip("Actual force (multiplied with speedDiff) applied to the player to decelerate")]
-        [ReadOnly] public float runDecelAmount;
-        [Space(5)]
-        [Tooltip("Multiplier applied to acceleration rate when airborne")]
-        [Range(0, 1)] public float accelInAirMult;
-        [Tooltip("Multiplier applied to deceleration rate when airborne")]
-        [Range(0, 1)] public float decelInAirMult;
 
         [Space(20)]
         [Header("CROUCH")]
@@ -70,10 +55,6 @@ namespace Character_Controller.Runtime.Controller
         [Range(0, 1)] public float jumpHangGravityMult;
         [Tooltip("Speeds (close to 0) where the player will experience extra 'jump hang'. The player's velocity.y is closest to 0 at the jump's apex")]
         public float jumpHangTimeThreshold;
-        [Tooltip("Multiplier applied to acceleration rate during 'jump hang'")]
-        public float jumpHangAccelerationMult;
-        [Tooltip("Multiplier applied to speed during 'jump hang'")]
-        public float jumpHangMaxSpeedMult;
 
         [Header("WALL JUMP")]
         [Tooltip("Force applied to the player when wall jumping")]
@@ -118,14 +99,6 @@ namespace Character_Controller.Runtime.Controller
             gravityScale = gravityStrength / Physics2D.gravity.y;
             
             jumpForce = Mathf.Abs(gravityStrength) * jumpTimeToApex;
-
-            runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
-            runDeceleration = Mathf.Clamp(runDeceleration, 0.01f, runMaxSpeed);
-
-            // Calculate are run acceleration & deceleration forces using formula:
-            //      amount = ((1 / Time.fixedDeltaTime) * acceleration) / runMaxSpeed
-            runAccelAmount = (50 * runAcceleration) / runMaxSpeed;
-            runDecelAmount = (50 * runDeceleration) / runMaxSpeed;
         }
     }
 }
