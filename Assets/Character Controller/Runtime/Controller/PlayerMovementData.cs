@@ -28,12 +28,16 @@ namespace Character_Controller.Runtime.Controller
         [Header("RUN")]
         [Tooltip("Target speed we want the player to reach")]
         public float runMaxSpeed;
+        [Tooltip("Player's acceleration")]
         public float acceleration;
+        [Tooltip("Multiplier applied to decelerate the player on the ground")]
         [Range(0f, 1f)] public float groundDecay;
+        [Tooltip("Multiplier applied to decelerate the player on the air")]
         [Range(0f, 1f)] public float airDecay;
 
         [Space(20)]
         [Header("CROUCH")]
+        [Tooltip("Target speed we want the player to reach when crouching")]
         public float crouchSpeed;
         
         [Space(20)]

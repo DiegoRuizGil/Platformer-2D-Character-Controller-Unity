@@ -12,7 +12,7 @@ You can try a demo from this [`itch.io`](https://diegorg64.itch.io/character-con
     - [Jump](#jump)
     - [Slide](#slide)
     - [Dash](#dash)
-    - [Assits](#assits)
+    - [Assists](#assists)
 - [License](#license)
 
 ## Player States
@@ -36,12 +36,12 @@ These movement parameters are as follows:
 
 ### Run
 - **RunMaxSpeed**: Target speed we want the player to reach
-- **RunAcceleration**: The speed at which the player accelerates to max speed, can be set to runMaxSpeed to instant acceleration down to 0 for none at all
-- **RunDeceleration**: The speed at which the player deceleration to max speed, can be set to runMaxSpeed to instant deceleration down to 0 for none at all
-- **RunAccelAmount**: Actual force (multiplied with speedDiff) applied to the player to accelerate
-- **RunDecelAmount**: Actual force (multiplied with speedDiff) applied to the player to decelerate
-- **AccelInAirMult**: Multiplier applied to acceleration rate when airborne
-- **DecelInAirMult**: Multiplier applied to deceleration rate when airborne
+- **Acceleration**: Player's acceleration
+- **GroundDecay**: Multiplier applied to decelerate the player on the ground
+- **AirDecay**: Multiplier applied to decelerate the player on the air
+
+### Crouch
+- **CrouchSpeed**: Target speed we want the player to reach when crouching
 
 ### Jump
 - **JumpHeight**: Height of the player's jump
@@ -68,7 +68,7 @@ These movement parameters are as follows:
 - **DashRefillTime**: Time to recharge the dash after dashing
 - **DashSleepTime**: Time that the timeScale will be set to 0 when a dash is performed
 
-### Assits
+### Assists
 - **CoyoteTime**: Margin time to perform a jump while the player is falling
 - **JumpInputBufferTime**: Margin time in which the jump input can be processed
 - **DashInputBufferTime**: Margin time in which the dash input can be processed
