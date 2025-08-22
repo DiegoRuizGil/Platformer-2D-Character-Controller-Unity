@@ -13,6 +13,10 @@ namespace Character_Controller.Runtime.Controller
         [field: SerializeField] public PlayerMovementData Data { get; private set; }
         [field: Space(10)]
         [field: SerializeField] public PlayerVFX VFX { get; private set; }
+
+        [Header("Colliders")]
+        [SerializeField] private BoxCollider2D defaultCollider;
+        [SerializeField] private BoxCollider2D crouchCollider;
         
         public Animator Animator { get; private set; }
         
@@ -52,7 +56,9 @@ namespace Character_Controller.Runtime.Controller
             DashModule = new DashModule(_body, VFX, Data);
             MovementModule = new MovementModule(_body, VFX);
             JumpModule = new JumpModule(_body, VFX, Data);
-            CrouchModule = new CrouchModule();
+            CrouchModule = new CrouchModule(_raycastInfo, defaultCollider, crouchCollider);
+            
+            CrouchModule.SetDefaultCollider();
         }
 
         protected override void Update()

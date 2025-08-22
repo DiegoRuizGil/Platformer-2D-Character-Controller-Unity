@@ -1,11 +1,14 @@
 using Character_Controller.Runtime.CustomAttributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Character_Controller.Runtime.Controller
 {
-    [RequireComponent(typeof(BoxCollider2D))]
     public class RaycastInfo : MonoBehaviour
     {
+        [Header("Dependencies")]
+        [SerializeField] private BoxCollider2D boxCollider;
+        
         [Header("Settings")]
         [Tooltip("The character's collision skin width")]
         [SerializeField] private float _skinWidth = 0.015f;
@@ -22,7 +25,7 @@ namespace Character_Controller.Runtime.Controller
         [SerializeField] private bool _showDebugRays = true;
         
         [SerializeField] private RaycastHitInfo _hitInfo;
-        private BoxCollider2D _collider;
+        private BoxCollider2D _currentCollider;
 
         private float _verticalRaySpacing;
         private float _horizontalRaySpacing;
@@ -47,11 +50,7 @@ namespace Character_Controller.Runtime.Controller
 
         private void Awake()
         {
-            _collider = GetComponent<BoxCollider2D>();
-            
-            // calculate the space between each raycast
-            SetVerticalRaySpacing();
-            SetHorizontalRaySpacing();
+            SetCollider(boxCollider);
         }
 
         private void Update()
@@ -59,6 +58,13 @@ namespace Character_Controller.Runtime.Controller
             // check for collisions
             CheckVerticalCollisions();
             CheckHorizontalCollisions();
+        }
+
+        public void SetCollider(BoxCollider2D boxCollider)
+        {
+            _currentCollider = boxCollider;
+            SetVerticalRaySpacing();
+            SetHorizontalRaySpacing();
         }
 
         #region Collisions
@@ -69,7 +75,7 @@ namespace Character_Controller.Runtime.Controller
         
         private void CheckForCollisions(CollisionType type)
         {
-            Bounds bounds = _collider.bounds;
+            Bounds bounds = _currentCollider.bounds;
             bounds.Expand(_skinWidth * -2);
             
             switch (type)
@@ -124,7 +130,7 @@ namespace Character_Controller.Runtime.Controller
         private bool CheckForCollisions(int rayCount, float raySpacing, Vector2 startRayOrigin,
             Vector2 raycastShiftDirection, Vector2 raycastDirection)
         {
-            Bounds bounds = _collider.bounds;
+            Bounds bounds = _currentCollider.bounds;
             bounds.Expand(_skinWidth * -2);
             bool hasHit = false;
 
@@ -152,7 +158,7 @@ namespace Character_Controller.Runtime.Controller
         #region Vertical Raycasts
         private void SetVerticalRaySpacing()
         {
-            Bounds bounds = _collider.bounds;
+            Bounds bounds = _currentCollider.bounds;
             bounds.Expand(_skinWidth * -2);
     
             _verticalRayCount = Mathf.Clamp(_verticalRayCount, 2, int.MaxValue);
@@ -169,7 +175,7 @@ namespace Character_Controller.Runtime.Controller
         #region Horizontal Raycasts
         private void SetHorizontalRaySpacing()
         {
-            Bounds bounds = _collider.bounds;
+            Bounds bounds = _currentCollider.bounds;
             bounds.Expand(_skinWidth * -2);
     
             _horizontalRayCount = Mathf.Clamp(_horizontalRayCount, 2, int.MaxValue);
