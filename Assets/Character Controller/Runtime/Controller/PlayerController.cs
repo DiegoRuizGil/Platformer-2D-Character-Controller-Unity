@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Character_Controller.Runtime.Controller.Collisions;
 using Character_Controller.Runtime.Controller.Modules;
 using Character_Controller.Runtime.Controller.States;
@@ -26,6 +27,7 @@ namespace Character_Controller.Runtime.Controller
         public MovementModule MovementModule;
         public JumpModule JumpModule;
         public CrouchModule CrouchModule;
+        public ClimbingModule ClimbingModule;
 
         public bool IsGrounded => _raycastInfo.HitInfo.Below;
         public bool LeftWallHit => _raycastInfo.HitInfo.Left;
@@ -58,6 +60,7 @@ namespace Character_Controller.Runtime.Controller
             MovementModule = new MovementModule(_body, VFX);
             JumpModule = new JumpModule(_body, VFX, Data);
             CrouchModule = new CrouchModule(_raycastInfo, defaultCollider, crouchCollider);
+            ClimbingModule = new ClimbingModule(_body, defaultCollider, _raycastInfo.collisionLayers);
             
             CrouchModule.SetDefaultCollider();
         }
@@ -69,12 +72,24 @@ namespace Character_Controller.Runtime.Controller
             JumpModule.HandleInputBuffer(Time.deltaTime);
             DashModule.HandleInputBuffer(Time.deltaTime);
             
-            if (Direction.x != 0 && _currentState.StateKey != PlayerStates.Dashing)
+            if (Direction.x != 0 && !IsInState(PlayerStates.Dashing, PlayerStates.Climbing))
                 MovementModule.SetDirectionToFace(Direction.x > 0, IsGrounded);
         }
 
         private void OnEnable() => EnableInput();
         private void OnDisable() => DisableInput();
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.CompareTag("Ladder"))
+                ClimbingModule.EnterLadder(other.GetComponentInParent<Ladder>());
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.CompareTag("Ladder"))
+                ClimbingModule.ExitLadder();
+        }
 
         protected override void SetStates()
         {
@@ -86,6 +101,7 @@ namespace Character_Controller.Runtime.Controller
             States.Add(PlayerStates.WallJumping, new PlayerWallJumpingState(PlayerStates.WallJumping, this));
             States.Add(PlayerStates.Dashing, new PlayerDashingState(PlayerStates.Dashing, this));
             States.Add(PlayerStates.Crouching, new PlayerCrouchState(PlayerStates.Crouching, this));
+            States.Add(PlayerStates.Climbing, new PlayerClimbingState(PlayerStates.Climbing, this));
             
             // set the player's initial state
             _currentState = States[PlayerStates.Grounded];
@@ -125,6 +141,11 @@ namespace Character_Controller.Runtime.Controller
             Time.timeScale = 0;
             yield return new WaitForSecondsRealtime(duration);
             Time.timeScale = 1;
+        }
+
+        private bool IsInState(params PlayerStates[] states)
+        {
+            return states.Any(state => _currentState.StateKey == state);
         }
         
         #if UNITY_EDITOR

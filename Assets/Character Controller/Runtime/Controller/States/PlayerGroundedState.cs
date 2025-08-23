@@ -60,6 +60,9 @@ namespace Character_Controller.Runtime.Controller.States
 
             if (Context.CrouchModule.InputRequest)
                 return PlayerStates.Crouching;
+
+            if (Context.ClimbingModule.InputRequest && Context.ClimbingModule.OnLadder)
+                return PlayerStates.Climbing;
             
             return StateKey;
         }

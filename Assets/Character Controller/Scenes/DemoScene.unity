@@ -12050,6 +12050,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2046018821692015342, guid: c94d2c491ba634a48bbf7388e53d843d, type: 3}
+      propertyPath: m_Size.y
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3488469399345793074, guid: c94d2c491ba634a48bbf7388e53d843d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.5
@@ -12090,9 +12094,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5141505937352910033, guid: c94d2c491ba634a48bbf7388e53d843d, type: 3}
+      propertyPath: height
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6877177380744308906, guid: c94d2c491ba634a48bbf7388e53d843d, type: 3}
       propertyPath: m_Name
       value: Ladder
+      objectReference: {fileID: 0}
+    - target: {fileID: 7870307948456669398, guid: c94d2c491ba634a48bbf7388e53d843d, type: 3}
+      propertyPath: m_Size.y
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7870307948456669398, guid: c94d2c491ba634a48bbf7388e53d843d, type: 3}
+      propertyPath: m_Offset.y
+      value: -4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
