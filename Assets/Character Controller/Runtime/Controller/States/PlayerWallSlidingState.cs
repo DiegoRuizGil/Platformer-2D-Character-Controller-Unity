@@ -56,6 +56,9 @@ namespace Character_Controller.Runtime.Controller.States
             if (!Context.LeftWallHit && !Context.RightWallHit)
                 return PlayerStates.Falling;
             
+            if (Context.ClimbingModule.InputRequest && Context.ClimbingModule.OnLadder)
+                return PlayerStates.Climbing;
+            
             return PlayerStates.WallSliding;
         }
     }

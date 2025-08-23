@@ -39,6 +39,12 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override PlayerStates GetNextState()
         {
+            if (Context.Direction.y < 0 && Context.IsGrounded)
+                return PlayerStates.Grounded;
+            
+            if (Context.JumpModule.InputRequest)
+                return PlayerStates.Jumping;
+            
             return StateKey;
         }
     }
