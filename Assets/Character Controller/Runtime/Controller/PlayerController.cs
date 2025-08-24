@@ -26,7 +26,6 @@ namespace Character_Controller.Runtime.Controller
         
         public Animator Animator { get; private set; }
         
-        public PlayerStates CurrentState => _currentState.StateKey;
         public DashModule DashModule;
         public MovementModule MovementModule;
         public JumpModule JumpModule;
@@ -127,7 +126,8 @@ namespace Character_Controller.Runtime.Controller
             States.Add(PlayerStates.Climbing, new PlayerClimbingState(PlayerStates.Climbing, this));
             
             // set the player's initial state
-            _currentState = States[PlayerStates.Grounded];
+            CurrentState = States[PlayerStates.Grounded];
+            PreviousState = CurrentState;
         }
         
         private void EnableInput()
@@ -168,14 +168,14 @@ namespace Character_Controller.Runtime.Controller
 
         private bool IsInState(params PlayerStates[] states)
         {
-            return states.Any(state => _currentState.StateKey == state);
+            return states.Any(state => CurrentState.StateKey == state);
         }
         
         #if UNITY_EDITOR
         private void OnGUI()
         {
             GUILayout.BeginHorizontal();
-            string rootStateName = _currentState.Name;
+            string rootStateName = CurrentState.Name;
             GUILayout.Label($"<color=black><size=20>State: {rootStateName}</size></color>");
             GUILayout.EndHorizontal();
             

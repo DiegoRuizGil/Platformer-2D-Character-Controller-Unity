@@ -4,6 +4,8 @@ namespace Character_Controller.Runtime.Controller.States
 {
     public class PlayerJumpingState : PlayerBaseState
     {
+        private bool _fromClimbing;
+        
         public PlayerJumpingState(PlayerStates key, PlayerController context)
             : base(key, context) { }
 
@@ -46,7 +48,7 @@ namespace Character_Controller.Runtime.Controller.States
             if (Context.DashModule.InputRequest && Context.DashModule.CanDash)
                 return PlayerStates.Dashing;
             
-            if (Context.ClimbingModule.InputUpRequest && Context.ClimbingModule.CanClimb)
+            if (Context.ClimbingModule.InputUpRequest && Context.ClimbingModule.CanClimb && Context.PreviousState.StateKey != PlayerStates.Climbing)
                 return PlayerStates.Climbing;
             
             return StateKey;

@@ -9,7 +9,8 @@ namespace Character_Controller.Runtime.StateMachine
         private Dictionary<EState, BaseState<EState>> _states = new Dictionary<EState, BaseState<EState>>();
         public Dictionary<EState, BaseState<EState>> States => _states;
 
-        protected BaseState<EState> _currentState;
+        public BaseState<EState> CurrentState { get; protected set; }
+        public BaseState<EState> PreviousState { get; protected set; }
         private bool _isTransitioningState;
 
         /// <summary>
@@ -18,7 +19,7 @@ namespace Character_Controller.Runtime.StateMachine
         protected virtual void Start()
         {
             SetStates();
-            _currentState?.EnterState();
+            CurrentState?.EnterState();
         }
         
         /// <summary>
@@ -34,18 +35,18 @@ namespace Character_Controller.Runtime.StateMachine
         /// </summary>
         protected virtual void FixedUpdate()
         {
-            _currentState.FixedUpdateState();
+            CurrentState.FixedUpdateState();
         }
 
         protected abstract void SetStates();
         
         private void UpdateState()
         {
-            EState nextStateKey = _currentState.GetNextState();
+            EState nextStateKey = CurrentState.GetNextState();
             
-            if (!_isTransitioningState && nextStateKey.Equals(_currentState.StateKey))
+            if (!_isTransitioningState && nextStateKey.Equals(CurrentState.StateKey))
             {
-                _currentState.UpdateState();
+                CurrentState.UpdateState();
             }
             else if (!_isTransitioningState)
             {
@@ -57,9 +58,10 @@ namespace Character_Controller.Runtime.StateMachine
         {
             _isTransitioningState = true;
 
-            _currentState.ExitState();
-            _currentState = States[stateKey];
-            _currentState.EnterState();
+            CurrentState.ExitState();
+            PreviousState = CurrentState;
+            CurrentState = States[stateKey];
+            CurrentState.EnterState();
 
             _isTransitioningState = false;
         }
