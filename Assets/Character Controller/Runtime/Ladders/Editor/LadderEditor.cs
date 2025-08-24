@@ -10,7 +10,6 @@ namespace Character_Controller.Runtime.Ladders
         private SerializedObject _so;
         private SerializedProperty _spriteRenderer;
         private SerializedProperty _trigger;
-        private SerializedProperty _groundCollider;
         private SerializedProperty _topTrigger;
         private SerializedProperty _bottomTrigger;
         
@@ -23,7 +22,6 @@ namespace Character_Controller.Runtime.Ladders
             _so = serializedObject;
             _spriteRenderer = _so.FindProperty("spriteRenderer");
             _trigger = _so.FindProperty("trigger");
-            _groundCollider = _so.FindProperty("groundCollider");
             _topTrigger = _so.FindProperty("topTrigger");
             _bottomTrigger = _so.FindProperty("bottomTrigger");
             _height = _so.FindProperty("height");
@@ -36,7 +34,6 @@ namespace Character_Controller.Runtime.Ladders
             _so.Update();
             EditorGUILayout.PropertyField(_spriteRenderer);
             EditorGUILayout.PropertyField(_trigger);
-            EditorGUILayout.PropertyField(_groundCollider);
             EditorGUILayout.PropertyField(_topTrigger);
             EditorGUILayout.PropertyField(_bottomTrigger);
             

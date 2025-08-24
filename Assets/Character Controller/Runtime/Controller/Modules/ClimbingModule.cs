@@ -5,17 +5,26 @@ namespace Character_Controller.Runtime.Controller.Modules
 {
     public class ClimbingModule
     {
-        public bool InputRequest => InputManager.PlayerActions.Movement.ReadValue<Vector2>().y > 0;
-        public bool OnLadder => _ladder != null;
-        public bool OnBottomLadder;
+        public bool InputUpRequest => InputManager.PlayerActions.Movement.ReadValue<Vector2>().y > 0;
+        public bool InputDownRequest => InputManager.PlayerActions.Movement.ReadValue<Vector2>().y < 0;
+
+        public bool CanClimb => OnLadder && !OnTopLadder;
+        public bool CanDescend => OnLadder && OnTopLadder;
+        private bool OnLadder => _ladder != null;
+        public bool OnBottomLadder = false;
+        public bool OnTopLadder = false;
 
         private readonly Rigidbody2D _body;
+        private readonly Transform _playerCenterPoint;
+        private readonly Transform _playerBottomPoint;
         
         private Ladder _ladder;
 
-        public ClimbingModule(Rigidbody2D body)
+        public ClimbingModule(Rigidbody2D body, Transform playerCenterPoint, Transform playerBottomPoint)
         {
             _body = body;
+            _playerCenterPoint = playerCenterPoint;
+            _playerBottomPoint = playerBottomPoint;
         }
 
         public void Climb(float direction, float speed, float acceleration)
@@ -29,27 +38,34 @@ namespace Character_Controller.Runtime.Controller.Modules
 
         public void ExitLadderTrigger() => _ladder = null;
 
-        public void SetPosition()
+        public void SetClimbingPosition()
         {
             Assert.IsTrue(OnLadder);
-            
+
+            SetClimbingXPosition();
+            if (OnTopLadder)
+                SetDescendingYPosition();
+        }
+
+        public void SetGroundedPosition()
+        {
+            var position = _body.transform.position;
+            position.y = _ladder.transform.position.y - _playerBottomPoint.localPosition.y + 0.05f;
+            _body.MovePosition(position);
+        }
+        
+        private void SetDescendingYPosition()
+        {
+            var position = _body.transform.position;
+            position.y = _ladder.transform.position.y - _playerCenterPoint.localPosition.y;
+            _body.transform.position = position;
+        }
+        
+        private void SetClimbingXPosition()
+        {
             var position = _body.transform.position;
             position.x = _ladder.transform.position.x;
             _body.transform.position = position;
-        }
-
-        public void ActivateLadderCollider()
-        {
-            Assert.IsTrue(OnLadder);
-            
-            _ladder.ActivateCollider();
-        }
-
-        public void DeactivateLadderCollider()
-        {
-            Assert.IsTrue(OnLadder);
-            
-            _ladder.DeactivateCollider();
         }
     }
 }

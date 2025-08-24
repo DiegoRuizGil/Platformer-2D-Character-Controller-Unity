@@ -12,8 +12,8 @@ namespace Character_Controller.Runtime.Controller.States
             Context.Animator.Play("Climbing");
             
             Context.MovementModule.SetGravityScale(0);
-            Context.ClimbingModule.SetPosition();
-            Context.ClimbingModule.DeactivateLadderCollider();
+            Context.ClimbingModule.SetClimbingPosition();
+            // Context.ClimbingModule.DeactivateLadderCollider();
         }
 
         public override void UpdateState()
@@ -37,12 +37,17 @@ namespace Character_Controller.Runtime.Controller.States
             Context.Animator.enabled = true;
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
             
-            Context.ClimbingModule.ActivateLadderCollider();
+            // Context.ClimbingModule.ActivateLadderCollider();
+            if (Context.ClimbingModule.InputUpRequest && Context.ClimbingModule.OnTopLadder)
+                Context.ClimbingModule.SetGroundedPosition();
         }
 
         public override PlayerStates GetNextState()
         {
             if (Context.Direction.y < 0 && Context.IsGrounded)
+                return PlayerStates.Grounded;
+
+            if (Context.ClimbingModule.InputUpRequest && Context.ClimbingModule.OnTopLadder)
                 return PlayerStates.Grounded;
             
             if (Context.JumpModule.InputRequest)

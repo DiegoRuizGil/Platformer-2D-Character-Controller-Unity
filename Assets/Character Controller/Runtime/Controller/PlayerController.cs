@@ -19,6 +19,10 @@ namespace Character_Controller.Runtime.Controller
         [Header("Colliders")]
         [SerializeField] private BoxCollider2D defaultCollider;
         [SerializeField] private BoxCollider2D crouchCollider;
+
+        [Header("Positions")]
+        [SerializeField] private Transform centerPoint;
+        [SerializeField] private Transform bottomPoint;
         
         public Animator Animator { get; private set; }
         
@@ -60,7 +64,7 @@ namespace Character_Controller.Runtime.Controller
             MovementModule = new MovementModule(_body, VFX);
             JumpModule = new JumpModule(_body, VFX, Data);
             CrouchModule = new CrouchModule(_raycastInfo, defaultCollider, crouchCollider);
-            ClimbingModule = new ClimbingModule(_body);
+            ClimbingModule = new ClimbingModule(_body, centerPoint, bottomPoint);
             
             CrouchModule.SetDefaultCollider();
         }
@@ -85,6 +89,8 @@ namespace Character_Controller.Runtime.Controller
                 ClimbingModule.EnterLadderTrigger(other.GetComponentInParent<Ladder>());
             if (other.CompareTag("Ladder Bottom"))
                 ClimbingModule.OnBottomLadder = true;
+            if (other.CompareTag("Ladder Top"))
+                ClimbingModule.OnTopLadder = true;
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -93,6 +99,8 @@ namespace Character_Controller.Runtime.Controller
                 ClimbingModule.ExitLadderTrigger();
             if (other.CompareTag("Ladder Bottom"))
                 ClimbingModule.OnBottomLadder = false;
+            if (other.CompareTag("Ladder Top"))
+                ClimbingModule.OnTopLadder = false;
         }
 
         protected override void SetStates()

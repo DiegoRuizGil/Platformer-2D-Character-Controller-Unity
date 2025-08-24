@@ -46,7 +46,7 @@ namespace Character_Controller.Runtime.Controller.States
             if (Context.DashModule.InputRequest && Context.DashModule.CanDash)
                 return PlayerStates.Dashing;
             
-            if (Context.ClimbingModule.InputRequest && Context.ClimbingModule.OnLadder)
+            if (Context.ClimbingModule.InputUpRequest && Context.ClimbingModule.CanClimb)
                 return PlayerStates.Climbing;
             
             return StateKey;
