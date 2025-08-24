@@ -36,9 +36,9 @@ These movement parameters are as follows:
 
 ### Run
 - **RunMaxSpeed**: Target speed we want the player to reach
-- **Acceleration**: Player's acceleration
-- **GroundDecay**: Multiplier applied to decelerate the player on the ground
-- **AirDecay**: Multiplier applied to decelerate the player on the air
+- **RunAcceleration**: Rate at which tue player accelerates towards the target run speed
+- **GroundDecay**: Multiplier applied to gradually reduce the player's speed while in the ground (0 = instant stop, 1 = no slowdown)
+- **AirDecay**: Multiplier applied to gradually reduce the player's speed while in the air (0 = instant stop, 1 = no slowdown)
 
 ### Crouch
 - **CrouchSpeed**: Target speed we want the player to reach when crouching
@@ -67,6 +67,11 @@ These movement parameters are as follows:
 - **DashTime**: Duration of the dash
 - **DashRefillTime**: Time to recharge the dash after dashing
 - **DashSleepTime**: Time that the timeScale will be set to 0 when a dash is performed
+
+### Climbing
+- **ClimSpeed**: Vertical speed the player moves at when climbing a ladder
+- **ClimbAcceleration**: Rate at which the player accelerates toward the target climbing speed
+- **ClimbDecay**: Multiplier applied to gradually reduce the climbing speed when no input is given (0 = instant stop, 1 = no slowdown)
 
 ### Assists
 - **CoyoteTime**: Margin time to perform a jump while the player is falling
