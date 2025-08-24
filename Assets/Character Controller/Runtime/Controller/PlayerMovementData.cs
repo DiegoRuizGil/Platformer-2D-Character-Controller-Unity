@@ -88,8 +88,10 @@ namespace Character_Controller.Runtime.Controller
         public float dashRefillTime;
         [Tooltip("Time that the timeScale will be set to 0 when a dash is performed")]
         public float dashSleepTime;
-
+        
         [Header("ASSISTS")]
+        [Range(0f, 1f)] public float xInputDeadZone;
+        [Range(0f, 1f)] public float yInputDeadZone;
         [Tooltip("Margin time to perform a jump while the player is falling")]
         [Range(0.01f, 0.5f)] public float coyoteTime;
         [Tooltip("Margin time in which the jump input can be processed")]

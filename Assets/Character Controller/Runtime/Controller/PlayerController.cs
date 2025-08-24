@@ -44,7 +44,18 @@ namespace Character_Controller.Runtime.Controller
             set => _body.velocity = value;
         }
 
-        public Vector2 Direction => _movementAction.ReadValue<Vector2>();
+        public Vector2 Direction
+        {
+            get
+            {
+                var dir = _movementAction.ReadValue<Vector2>();
+                if (Mathf.Abs(dir.x) < Data.xInputDeadZone)
+                    dir.x = 0;
+                if (Mathf.Abs(dir.y) < Data.yInputDeadZone)
+                    dir.y = 0;
+                return dir;
+            }
+        }
 
         private Rigidbody2D _body;
         private RaycastInfo _raycastInfo;
@@ -64,7 +75,7 @@ namespace Character_Controller.Runtime.Controller
             MovementModule = new MovementModule(_body, VFX);
             JumpModule = new JumpModule(_body, VFX, Data);
             CrouchModule = new CrouchModule(_raycastInfo, defaultCollider, crouchCollider);
-            ClimbingModule = new ClimbingModule(_body, centerPoint, bottomPoint);
+            ClimbingModule = new ClimbingModule(_body, centerPoint, bottomPoint, Data.yInputDeadZone);
             
             CrouchModule.SetDefaultCollider();
         }

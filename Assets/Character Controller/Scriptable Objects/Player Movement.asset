@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ade1ce0f68a60941ab3e6793a223df4, type: 3}
   m_Name: Player Movement
   m_EditorClassIdentifier: 
+  xInputDeadZone: 0.25
+  yInputDeadZone: 0.25
   gravityStrength: -56.25
   gravityScale: 5.733945
   fallGravityMult: 2
@@ -22,12 +24,6 @@ MonoBehaviour:
   acceleration: 9
   groundDecay: 0.2
   airDecay: 0.5
-  runAcceleration: 9.5
-  runDeceleration: 9.5
-  runAccelAmount: 50
-  runDecelAmount: 50
-  accelInAirMult: 1
-  decelInAirMult: 1
   crouchSpeed: 4
   jumpHeight: 4.5
   jumpTimeToApex: 0.4
@@ -36,8 +32,6 @@ MonoBehaviour:
   jumpCutGravity: 3.5
   jumpHangGravityMult: 1
   jumpHangTimeThreshold: 0
-  jumpHangAccelerationMult: 0
-  jumpHangMaxSpeedMult: 1
   wallJumpForce: {x: 8.5, y: 20}
   wallJumpRunLerp: 0.075
   wallJumpAccelerationMult: 0.1
