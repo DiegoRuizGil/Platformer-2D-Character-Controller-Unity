@@ -13,7 +13,6 @@ namespace Character_Controller.Runtime.Controller.States
             
             Context.MovementModule.SetGravityScale(0);
             Context.ClimbingModule.SetClimbingPosition();
-            // Context.ClimbingModule.DeactivateLadderCollider();
         }
 
         public override void UpdateState()
@@ -25,11 +24,11 @@ namespace Character_Controller.Runtime.Controller.States
         {
             Context.ClimbingModule.Climb(
                 Context.Direction.y,
-                Context.Data.runMaxSpeed,
-                Context.Data.acceleration);
+                Context.Data.climbSpeed,
+                Context.Data.climbAcceleration);
             
             if (Context.Direction.y == 0)
-                Context.MovementModule.ApplyFriction(Context.Data.groundDecay);
+                Context.MovementModule.ApplyFriction(Context.Data.climbDecay);
         }
 
         public override void ExitState()
@@ -37,7 +36,6 @@ namespace Character_Controller.Runtime.Controller.States
             Context.Animator.enabled = true;
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
             
-            // Context.ClimbingModule.ActivateLadderCollider();
             if (Context.ClimbingModule.InputUpRequest && Context.ClimbingModule.OnTopLadder)
                 Context.ClimbingModule.SetGroundedPosition();
         }

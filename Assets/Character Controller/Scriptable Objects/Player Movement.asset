@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ade1ce0f68a60941ab3e6793a223df4, type: 3}
   m_Name: Player Movement
   m_EditorClassIdentifier: 
-  xInputDeadZone: 0.25
-  yInputDeadZone: 0.25
   gravityStrength: -56.25
   gravityScale: 5.733945
   fallGravityMult: 2
@@ -21,7 +19,7 @@ MonoBehaviour:
   fastFallGravityMult: 1
   maxFastFallSpeed: 30
   runMaxSpeed: 9.5
-  acceleration: 9
+  runAcceleration: 9
   groundDecay: 0.2
   airDecay: 0.5
   crouchSpeed: 4
@@ -43,6 +41,11 @@ MonoBehaviour:
   dashDuration: 0.15
   dashRefillTime: 0.2
   dashSleepTime: 0.05
+  climbSpeed: 7
+  climbAcceleration: 7
+  climbDecay: 0.2
+  xInputDeadZone: 0.25
+  yInputDeadZone: 0.25
   coyoteTime: 0.2
   jumpInputBufferTime: 0.2
   dashInputBufferTime: 0.05

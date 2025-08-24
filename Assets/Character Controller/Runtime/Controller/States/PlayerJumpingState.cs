@@ -33,7 +33,7 @@ namespace Character_Controller.Runtime.Controller.States
 
         public override void FixedUpdateState()
         {
-            Context.MovementModule.Move(Context.Direction, Context.Data.runMaxSpeed, Context.Data.acceleration);
+            Context.MovementModule.Move(Context.Direction, Context.Data.runMaxSpeed, Context.Data.runAcceleration);
             if (Context.Direction.x == 0)
                 Context.MovementModule.ApplyHorizontalFriction(Context.Data.airDecay);
         }

@@ -13,7 +13,7 @@
 
         public override void FixedUpdateState()
         {
-            Context.MovementModule.Move(Context.Direction, Context.Data.crouchSpeed, Context.Data.acceleration);
+            Context.MovementModule.Move(Context.Direction, Context.Data.crouchSpeed, Context.Data.runAcceleration);
             if (Context.Direction.x == 0)
                 Context.MovementModule.ApplyFriction(Context.Data.groundDecay);
         }

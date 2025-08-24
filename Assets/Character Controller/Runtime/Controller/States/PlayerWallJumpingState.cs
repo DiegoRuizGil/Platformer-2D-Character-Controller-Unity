@@ -28,7 +28,7 @@ namespace Character_Controller.Runtime.Controller.States
         {
             if (HasPassedMinDistance())
             {
-                float acceleration = Context.Data.acceleration * Context.Data.wallJumpAccelerationMult;
+                float acceleration = Context.Data.runAcceleration * Context.Data.wallJumpAccelerationMult;
                 Context.MovementModule.Move(Context.Direction, Context.Data.runMaxSpeed, acceleration);
             }
         }

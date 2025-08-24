@@ -29,7 +29,7 @@ namespace Character_Controller.Runtime.Controller
         [Tooltip("Target speed we want the player to reach")]
         public float runMaxSpeed;
         [Tooltip("Player's acceleration")]
-        public float acceleration;
+        public float runAcceleration;
         [Tooltip("Multiplier applied to decelerate the player on the ground")]
         [Range(0f, 1f)] public float groundDecay;
         [Tooltip("Multiplier applied to decelerate the player on the air")]
@@ -88,6 +88,11 @@ namespace Character_Controller.Runtime.Controller
         public float dashRefillTime;
         [Tooltip("Time that the timeScale will be set to 0 when a dash is performed")]
         public float dashSleepTime;
+        
+        [Header("CLIMBING")]
+        public float climbSpeed;
+        public float climbAcceleration;
+        [Range(0f, 1f)] public float climbDecay;
         
         [Header("ASSISTS")]
         [Range(0f, 1f)] public float xInputDeadZone;

@@ -42,7 +42,7 @@ namespace Character_Controller.Runtime.Controller.States
             // if input has been pressed for long enough,
             // allow the player to move horizontally
             if (_movingTimer <= 0)
-                Context.MovementModule.Move(Context.Direction, Context.Data.runMaxSpeed, Context.Data.acceleration);
+                Context.MovementModule.Move(Context.Direction, Context.Data.runMaxSpeed, Context.Data.runAcceleration);
         }
 
         public override PlayerStates GetNextState()
