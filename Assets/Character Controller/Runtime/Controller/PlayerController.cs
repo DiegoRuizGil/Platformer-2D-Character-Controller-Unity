@@ -60,7 +60,7 @@ namespace Character_Controller.Runtime.Controller
             MovementModule = new MovementModule(_body, VFX);
             JumpModule = new JumpModule(_body, VFX, Data);
             CrouchModule = new CrouchModule(_raycastInfo, defaultCollider, crouchCollider);
-            ClimbingModule = new ClimbingModule(_body, defaultCollider, _raycastInfo.collisionLayers);
+            ClimbingModule = new ClimbingModule(_body);
             
             CrouchModule.SetDefaultCollider();
         }
@@ -82,13 +82,17 @@ namespace Character_Controller.Runtime.Controller
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Ladder"))
-                ClimbingModule.EnterLadder(other.GetComponentInParent<Ladder>());
+                ClimbingModule.EnterLadderTrigger(other.GetComponentInParent<Ladder>());
+            if (other.CompareTag("Ladder Bottom"))
+                ClimbingModule.OnBottomLadder = true;
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
             if (other.CompareTag("Ladder"))
-                ClimbingModule.ExitLadder();
+                ClimbingModule.ExitLadderTrigger();
+            if (other.CompareTag("Ladder Bottom"))
+                ClimbingModule.OnBottomLadder = false;
         }
 
         protected override void SetStates()

@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ladder
+  - Ladder Top
+  - Ladder Bottom
   layers:
   - Default
   - TransparentFX

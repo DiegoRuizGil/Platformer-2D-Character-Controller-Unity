@@ -13,6 +13,7 @@ namespace Character_Controller.Runtime.Controller.States
             
             Context.MovementModule.SetGravityScale(0);
             Context.ClimbingModule.SetPosition();
+            Context.ClimbingModule.DeactivateLadderCollider();
         }
 
         public override void UpdateState()
@@ -35,6 +36,8 @@ namespace Character_Controller.Runtime.Controller.States
         {
             Context.Animator.enabled = true;
             Context.MovementModule.SetGravityScale(Context.Data.gravityScale);
+            
+            Context.ClimbingModule.ActivateLadderCollider();
         }
 
         public override PlayerStates GetNextState()
@@ -44,6 +47,9 @@ namespace Character_Controller.Runtime.Controller.States
             
             if (Context.JumpModule.InputRequest)
                 return PlayerStates.Jumping;
+
+            if (Context.ClimbingModule.OnBottomLadder && Context.Direction.y < 0)
+                return PlayerStates.Falling;
             
             return StateKey;
         }
